@@ -34,4 +34,6 @@ Copyright 2017 Justin Byers
           * password: password to log into MySQL
           * prefix: prefix all table names with this
      * mattermost
-          * wwhost: host of the mattermost server to connect to
+          * host: host of the mattermost server to connect to
+     * misc
+          * adminseeall: admins will see all projects in the sidebar
