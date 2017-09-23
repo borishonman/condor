@@ -113,7 +113,16 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
      color: #f36f01;
      margin-top: 5px;
 }
-
+#project-my-tasks-sort
+{
+     float: right;
+     margin-bottom: 5px;
+}
+#project-all-tasks-sort
+{
+     float: right;
+     margin-bottom: 5px;
+}
 #project-all-tasks-btns
 {
      float: right;

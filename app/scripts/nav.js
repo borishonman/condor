@@ -39,6 +39,7 @@ var changeProject = function(event)
           //add the project URL to the browser's history
           history.pushState('data to be passed', "Condor | "+sender.innerHTML, "/project/"+sender.innerHTML.replace(/ /g,'_').toLowerCase());
           //update the page stuff
+          updateTaskList();
           updateMyTaskList();
           updateAssignedTaskCounter();
           //check for delete permission

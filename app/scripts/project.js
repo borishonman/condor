@@ -243,6 +243,42 @@ var changeMyTask = function(sender)
           }
      });
 }
+var mySortFuncs = {
+     "Task Name": function(a,b) {
+          var aname = Date.parse(a.getElementsByTagName('td')[0].innerHTML);
+          var bname = Date.parse(b.getElementsByTagName('td')[0].innerHTML);
+          return bname < aname;
+     },
+     "Due Date (Soonest first)": function (a,b) {
+          var adue = Date.parse(a.getElementsByTagName('td')[2].innerHTML);
+          var bdue = Date.parse(b.getElementsByTagName('td')[2].innerHTML);
+          if (isNaN(adue) || isNaN(bdue))
+          {
+               return 0;
+          }
+          var adueunix = adue/1000;
+          var bdueunix = bdue/1000;
+
+          return adue - bdue;
+     },
+     "Due Date (Soonest last)": function (a,b) {
+          var adue = Date.parse(a.getElementsByTagName('td')[2].innerHTML);
+          var bdue = Date.parse(b.getElementsByTagName('td')[2].innerHTML);
+          if (isNaN(adue) || isNaN(bdue))
+          {
+               return 0;
+          }
+          var adueunix = adue/1000;
+          var bdueunix = bdue/1000;
+
+          return bdue - adue;
+     },
+     "Status": function(a,b) {
+          var astatus = Date.parse(a.getElementsByTagName('td')[1].innerHTML);
+          var bstatus = Date.parse(b.getElementsByTagName('td')[1].innerHTML);
+          return bstatus < astatus;
+     },
+};
 function updateMyTaskList()
 {
      var myTasksRows = document.getElementById("project-your-tasks").getElementsByTagName('tr');
@@ -253,6 +289,7 @@ function updateMyTaskList()
      }
 
      var tasksRows = document.getElementById('project-all-tasks').getElementsByTagName('tr');
+     myTasksRows = [];
      for (var i=1;i<tasksRows.length;i++)
      {
           var cells = tasksRows[i].getElementsByTagName('td');
@@ -278,8 +315,80 @@ function updateMyTaskList()
                     var newRowDescription = document.createElement("td");
                     newRowDescription.innerHTML = cells[4].innerHTML;
                     newRow.appendChild(newRowDescription);
-               document.getElementById("project-your-tasks").getElementsByTagName('tbody')[0].appendChild(newRow);
+               myTasksRows.push(newRow);
           }
+     }
+
+     myTasksRows.sort(mySortFuncs[document.getElementById('project-my-tasks-sort').getElementsByTagName('select')[0].value]);
+
+     for (t in myTasksRows)
+     {
+          document.getElementById("project-your-tasks").getElementsByTagName('tbody')[0].appendChild(myTasksRows[t]);
+     }
+}
+var sortFuncs = {
+     "Task Name": function(a,b) {
+          var aname = Date.parse(a.getElementsByTagName('td')[0].innerHTML);
+          var bname = Date.parse(b.getElementsByTagName('td')[0].innerHTML);
+          return bname < aname;
+     },
+     "Due Date (Soonest first)": function (a,b) {
+          var adue = Date.parse(a.getElementsByTagName('td')[3].innerHTML);
+          var bdue = Date.parse(b.getElementsByTagName('td')[3].innerHTML);
+          if (isNaN(adue) || isNaN(bdue))
+          {
+               return 0;
+          }
+          var adueunix = adue/1000;
+          var bdueunix = bdue/1000;
+
+          return adue - bdue;
+     },
+     "Due Date (Soonest last)": function (a,b) {
+          var adue = Date.parse(a.getElementsByTagName('td')[3].innerHTML);
+          var bdue = Date.parse(b.getElementsByTagName('td')[3].innerHTML);
+          if (isNaN(adue) || isNaN(bdue))
+          {
+               return 0;
+          }
+          var adueunix = adue/1000;
+          var bdueunix = bdue/1000;
+
+          return bdue - adue;
+     },
+     "Status": function(a,b) {
+          var astatus = Date.parse(a.getElementsByTagName('td')[2].innerHTML);
+          var bstatus = Date.parse(b.getElementsByTagName('td')[2].innerHTML);
+          return bstatus < astatus;
+     },
+     "Assigned Member": function(a,b) {
+          var aass = Date.parse(a.getElementsByTagName('td')[1].innerHTML);
+          var bass = Date.parse(b.getElementsByTagName('td')[1].innerHTML);
+          return bass < aass;
+     }
+};
+function updateTaskList()
+{
+     var tasks = [].slice.call(document.getElementById("project-all-tasks").getElementsByTagName('tr'));
+
+     if (tasks.length == 0)
+     {
+          return;
+     }
+     var func = document.getElementById('project-all-tasks-sort').getElementsByTagName('select')[0].value;
+
+     tasks.sort(sortFuncs[func]);
+
+     //clear the tasks table
+     for (var t=1;t<tasks.length;t++)
+     {
+          tasks[t].parentNode.removeChild(tasks[t]);
+     }
+
+     //rebuild the tasks table
+     for (t in tasks)
+     {
+          document.getElementById('project-all-tasks').getElementsByTagName('tbody')[0].appendChild(tasks[t]);
      }
 }
 function updateAssignedTaskCounter()
@@ -317,7 +426,7 @@ taskSelected = function(sender,norecurse)
      editDescBtn.className = editDescBtn.className.replace('disabled','');
 
      var assdeassBtn = document.getElementById('project-all-tasks-btns').getElementsByTagName('p')[2];
-     if (sender.getElementsByTagName('td')[1].innerHTML != "NOT ASSIGNED")
+     if (sender.getElementsByTagName('td')[1].innerHTML != "")
      {
           assdeassBtn.innerHTML = "Deassign";
           assdeassBtn.className = assdeassBtn.className.replace('disabled','');
