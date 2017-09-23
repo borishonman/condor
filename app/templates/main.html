@@ -1,0 +1,58 @@
+<!--
+This file is part of Condor.
+
+Condor is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Condor is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+*/
+-->
+
+<html>
+<head>
+     {{#each stylesheets}}<link rel="stylesheet" href="/styles/{{{this}}}">{{/each}}
+     {{#each scripts}}<script src="/scripts/{{this}}"></script>{{/each}}
+     <title>Condor</title>
+</head>
+<body>
+     <table id="pagetable" cellspacing="0" cellpadding="0"><tr>
+          <td>
+               <div id="sidebar">
+                    <div id="user-info">
+                         <table id="user-table"><tr>
+                         <!--<td style="width: 50px;"><div id="user-img"></div></td>-->
+                         <td>
+                              <a href="/"><div id="user-team"></div></a>
+                              <div id="user-id"></div>
+                              <button type="button" class="nodisplay" onclick="logout()" id="logout">Logout</button>
+                         </td>
+                         <td><div class="nodisplay clickable" onclick="openMembersWindow()" id="togglemember"></div></td>
+                         </tr></table>
+                    </div>
+                    <div class="sidebar-list" id="projects">
+                         <table cellspacing="0" cellpadding="0"><tr>
+                              <td class="nodisplay" id="projects-title"><h1>{{projects-title}}</h1></td>
+                              <td><div class="nodisplay clickable" onclick="createProject()" id="projects-create"></div></td>
+                              <td><div class="nodisplay clickable" onclick="deleteProject()" id="projects-delete"></div></td>
+                         </tr></table>
+                         <ul>
+                         </ul>
+                    </div>
+               </div>
+          </td>
+          <td style="width: 100%; height: 100%;">
+               <div id="content">
+                    {{{pagecontent}}}
+               </div>
+          </td>
+     </tr></table>
+</body>
+</html>

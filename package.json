@@ -1,0 +1,23 @@
+{
+  "name": "condor",
+  "version": "0.0.1",
+  "description": "task management engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodejs index.js",
+    "startlegacy": "node index.js",
+    "install": "nodejs install.js",
+    "installlegacy": "node install.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "express": "^4.15.4",
+    "handlebars": "^4.0.10",
+    "mattermost-client": "^4.1.1",
+    "mysql": "^2.14.1",
+    "sync-request": "^4.1.0"
+  }
+}

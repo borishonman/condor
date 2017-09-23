@@ -1,0 +1,176 @@
+/*
+This file is part of Condor.
+
+Condor is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Condor is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+@font-face
+{
+     font-family: Boogaloo;
+     src: url('/fonts/Boogaloo-Regular.otf');
+}
+
+body
+{
+     margin: 0;
+     padding: 0;
+     font-family: "Trebuchet MS",Tahoma,Verdana,sans-serif;
+}
+#pagetable
+{
+     width: 100%;
+     height: 100%;
+     table-layout: auto;
+     border-collapse: collapse;
+     border: none;
+}
+
+#sidebar
+{
+     float: left;
+     background-color: #f36f01;
+     display: inline-block;
+     height: 100%;
+     min-width: 200px;
+     max-width: 250px;
+     padding: 10px;
+}
+#sidebar h1
+{
+     font-size: 16pt;
+     margin: 0;
+     color: #6b3001;
+}
+.sidebar-list
+{
+     margin-top: 30px;
+     color: #6b3001;
+}
+.sidebar-list table
+{
+     width: 100%;
+}
+.sidebar-list ul
+{
+     margin-left: -10px;
+     margin-right: -10px;
+     padding: 0;
+     list-style: none;
+}
+.sidebar-list li
+{
+     margin: 0;
+     padding-top: 5px;
+     padding-bottom: 5px;
+     padding-left: 15px;
+}
+.sidebar-item:hover, .sidebar-item-active
+{
+     background: #e7e247;
+}
+
+#user-info table
+{
+     width: 100%;
+     text-align: center;
+}
+#user-info a
+{
+     text-decoration: none;
+     color: black;
+}
+#user-img
+{
+     width: 50px;
+     height: 50px;
+     float: left;
+     background: url("https://vignette.wikia.nocookie.net/typemoon/images/7/7a/RinUCopening.jpg/revision/latest/scale-to-width-down/300?cb=20141020220532");
+     background-size: cover;
+     border-style: solid;
+     border-size: 8px;
+     border-color: #4AA39B;
+     margin-right: 10px;
+}
+#user-team
+{
+     font-size: 14pt;
+     font-weight: bold;
+     padding: 5px 10px;
+     margin: 0px -10px;
+     width: 100%;
+}
+#user-id
+{
+     font-size: 10pt;
+     color: #6b3001;
+}
+
+#logout
+{
+     cursor: pointer;
+     font-size: 10pt;
+     color: white;
+
+     background-color: #4AA39B;
+     margin-top: 10px;
+     padding: 5px 10px;
+     border: none;
+     cursor: pointer;
+     text-decoration: none;
+     font-family: "Boogaloo",Tahoma,Arial,sans-serif;
+     font-size: 20px;
+     color: white;
+}
+
+#togglemember
+{
+     margin-left: 10px;
+     width: 20px;
+     height: 20px;
+     background: url('/images/member.svg');
+     background-size: cover;
+}
+
+.nodisplay
+{
+     display: none;
+}
+#projects-create
+{
+     float: right;
+     width: 20px;
+     height: 20px;
+     background: url('/images/create.svg');
+     background-size: cover;
+}
+#projects-delete
+{
+     float: right;
+     width: 20px;
+     height: 20px;
+     background: url('/images/delete.svg');
+     background-size: cover;
+}
+
+.clickable
+{
+     cursor: pointer;
+}
+
+#content
+{
+     width: 100%;
+     height: 100%;
+     padding-bottom: 20px;
+}
