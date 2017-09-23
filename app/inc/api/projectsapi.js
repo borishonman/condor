@@ -32,7 +32,7 @@ var handlers = {
                var res = {};
                for (p in projs)
                {
-                    if (MM.getAuthUser(query["token"]) in projs[p]["members"])
+                    if (MM.getAuthUser(query["token"]) in projs[p]["members"] || (MM.getIsUserAdmin() && config["misc"]["adminseeall"]))
                          res[p] = projs[p];
                }
                callback({result: "success", projs: res});
