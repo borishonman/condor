@@ -41,7 +41,7 @@ var handleRequest = function(res, req, callback)
                          return;
                     }
                     //we are only rendering the project part, not the whole page
-                    if (m[2].toLowerCase() in projs) callback(t.getHTML("project",projs[m[2].toLowerCase()]));
+                    if (m[2].toLowerCase() in projs) callback(t.getHTML("project",projs[m[2].toLowerCase()],req.headers['user-agent']));
                     else callback("<div id='noproject'>404: project not found</div>");
                });
           });
@@ -65,7 +65,7 @@ var handleRequest = function(res, req, callback)
                          "scripts": ["condor-api.js","members.js"],
                          "members": members
                     };
-                    callback(t.getHTML("members",data));
+                    callback(t.getHTML("members",data,req.headers['user-agent']));
                });
           });
           return;
@@ -76,18 +76,18 @@ var handleRequest = function(res, req, callback)
      var m = r.exec(req.url);
      if (m)
      {
-          callback(t.getHTML("login",null));
+          callback(t.getHTML("login",null,req.headers['user-agent']));
           return;
      }
 
      //fill the template data block and render the page
      var data = {
           "stylesheets": ["main.css","project.css","login.css"],
-          "scripts": ["condor.js","nav.js","condor-api.js","project.js"],
+          "scripts": ["jquery-3.2.1.js","cookie.js","condor-api.js","waitthing.js","condor.js","nav.js","project.js"],
           "projects-title": "PROJECTS",
           "pagecontent": content
      }
-     callback(t.getHTML("main", data));
+     callback(t.getHTML("main", data, req.headers['user-agent']));
 }
 
 //on launch, attempt to connect to DB first

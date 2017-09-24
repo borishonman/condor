@@ -17,6 +17,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 var handlebars = require('handlebars');
 var fs = require('fs');
+var MobileDetect = require('mobile-detect');
 
 //EDIT THIS: list of template files
 var templates = {
@@ -43,7 +44,10 @@ var methods = {
           for (var k in templates)
           {
                var v = templates[k];
-               compiledTemplates[k] = handlebars.compile(fs.readFileSync('app/templates/'+v).toString());
+               compiledTemplates[k] = {
+                    desktop: handlebars.compile(fs.readFileSync('app/templates/'+v).toString()),
+                    mobile: handlebars.compile(fs.readFileSync('app/templates/mobile/'+v).toString())
+               };
           }
      },
      /*
@@ -56,11 +60,17 @@ var methods = {
                data:          the data to fill the template with
           Returns:  null
      */
-     getHTML: function(template,data)
+     getHTML: function(template,data,ua)
      {
+          var ismobile = (new MobileDetect(ua)).mobile() != null;
+
           if ((template in compiledTemplates))
           {
-               return compiledTemplates[template](data);
+               if (ismobile)
+               {
+                    return compiledTemplates[template].mobile(data);
+               }
+               return compiledTemplates[template].desktop(data);
           }
           return null;
      }

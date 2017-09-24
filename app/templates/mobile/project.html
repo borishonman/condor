@@ -1,0 +1,105 @@
+<!--
+This file is part of Condor.
+
+Condor is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Condor is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<table id="project-title"><tr style="vertical-align: middle"><td>{{title}}</td></tr></table>
+<div id="project-description">{{description}}</div>
+<div id="project-members" class="project-section">
+     <p>Members</p>
+     <table cellpadding="6px" cellspacing="0" class="project-table">
+          <tr class="header">
+               <td class="header">User</td>
+               <td class="header">Project Role</td>
+               <td class="header"># Assigned Tasks</td>
+          </tr>
+          {{#each members}}
+          <tr class="regrow" onclick="changeMember(this)">
+               <td class="regcell">{{this.username}}</td>
+               <td class="regcell">{{this.role}}</td>
+               <td class="regcell">{{this.assigned}}</td>
+          </tr>
+          {{/each}}
+     </table>
+     <div class="nodisplay" id="project-members-buttons">
+          <p class="button" onclick="manageMember(this,'add')">Add to Project</p>
+          <p class="disabled button" onclick="manageMember(this,'del')">Delete</p>
+          <p class="disabled button" onclick="manageMember(this,'promdem')">Promote to Manager</p>
+     </div>
+</div>
+<div id="project-your-tasks" class="project-section">
+     <p>My Tasks</p>
+     <div id="project-my-tasks-sort">
+          Sort: <select onchange="updateMyTaskList()">
+               <option>Task Name</option>
+               <option>Due Date (Soonest first)</option>
+               <option>Due Date (Soonest last)</option>
+               <option>Status</option>
+               <option>Assigned Member</option>
+          </select>
+     </div>
+     <table cellpadding="6px" cellspacing="0" class="project-table">
+          <tr class="header">
+               <td class="header">Task</td>
+               <td class="header">Status</td>
+               <td class="header">Due</td>
+               <td class="header">Description</td>
+          </tr>
+     </table>
+     <div id="project-your-tasks-btns">
+          Status: <select disabled="true" onchange="changeMyTask(this)">
+               <option value="noworkdone">No Work Done</option>
+               <option value="inprogress">In Progress</option>
+               <option value="done">Done</option>
+          </select>
+     </div>
+</div>
+<div id="project-all-tasks" class="project-section">
+     <p>All Tasks</p>
+     <div id="project-all-tasks-sort">
+          Sort: <select onchange="updateTaskList()">
+               <option>Task Name</option>
+               <option>Due Date (Soonest first)</option>
+               <option>Due Date (Soonest last)</option>
+               <option>Status</option>
+               <option>Assigned Member</option>
+          </select>
+     </div>
+     <table cellpadding="6px" cellspacing="0" class="project-table">
+          <tr class="header">
+               <td class="header">Task</td>
+               <td class="header">Assigned To</td>
+               <td class="header">Status</td>
+               <td class="header">Due</td>
+               <td class="header">Description</td>
+          </tr>
+          {{#each tasks}}
+          <tr class="regrow" onclick="taskSelected(this)">
+               <td class="regcell">{{this.name}}</td>
+               <td class="regcell">{{this.assigned}}</td>
+               <td class="regcell">{{this.status}}</td>
+               <td class="regcell">{{this.due}}</td>
+               <td class="regcell">{{this.description}}</td>
+          </tr>
+          {{/each}}
+     </table>
+     <div class="nodisplay" id="project-all-tasks-btns">
+          <p class="button" onclick="createTask(this)">Create</p>
+          <p class="disabled button" onclick="deleteTask(this)">Delete</p>
+          <p class="disabled button" onclick="assdeassTask(this)">Assign to Member</p>
+          <p class="disabled button" onclick="editDate(this)">Edit Due Date</p>
+          <p class="disabled button" onclick="editDesc(this)">Edit Description</p>
+     </div>
+</div>
