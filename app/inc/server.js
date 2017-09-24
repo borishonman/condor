@@ -196,7 +196,7 @@ var methods = {
                else
                {
                     console.log("[INFO]\t\tHTTPS forwarding disabled, HTTP request responses will be served directly");
-                    http.createServer(app).listen(80);
+                    http.createServer(app).listen(config["server"]["http_port"]);
                }
 
           }

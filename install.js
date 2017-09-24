@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var config = require("./config/config.json");
+var config = require("./app/config/config.json");
 var mysql = require("mysql");
 
 var stdin = process.openStdin();
