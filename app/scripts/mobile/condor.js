@@ -108,8 +108,15 @@ function completeLogin(user)
           $('#login-table').hide();
 
           //display the projects list title header
+          var titleProjSz = parseInt($('#user-team').css('font-size'))/2;
           $('#projects-title').show();
-          $('#projects-title').css('font-size', parseInt($('#user-team').css('font-size'))/2);
+          $('#projects-title').css('font-size', titleProjSz);
+
+          //scale the add/delete project buttons
+          $('#projects-create').width(titleProjSz);
+          $('#projects-create').height(titleProjSz);
+          $('#projects-delete').width(titleProjSz);
+          $('#projects-delete').height(titleProjSz);
 
           //build the list of projects in the sidebar
           var match = false;

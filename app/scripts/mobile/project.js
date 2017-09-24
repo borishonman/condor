@@ -54,7 +54,8 @@ var createProject = function()
           if (response.result == "success")
           {
                var newProject = document.createElement('li');
-               newProject.className = "sidebar-item clickable project";
+               $(newProject).css('font-size', parseInt($('#projects-title').css('font-size'),10)/2);
+               $(newProject).css('padding', $(newProject).css('font-size'));
                newProject.innerHTML = projectToCreate;
                newProject.addEventListener('click',changeProject);
                document.getElementById('projects').getElementsByTagName('ul')[0].appendChild(newProject);

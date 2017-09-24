@@ -19,6 +19,22 @@ a
 {
      display: none;
 }
+#projects-create
+{
+     float: right;
+     width: 20px;
+     height: 20px;
+     background: url('/images/create.svg');
+     background-size: cover;
+}
+#projects-delete
+{
+     float: right;
+     width: 20px;
+     height: 20px;
+     background: url('/images/delete.svg');
+     background-size: cover;
+}
 
 #wait-table
 {
