@@ -67,6 +67,11 @@ var createProject = function()
 }
 var deleteProject = function()
 {
+     var confirm = window.confirm("Are you sure you want to delete "+getCurrentProject()+"?");
+     if (!confirm)
+     {
+          return;
+     }
      Condor.queryProject({"function": "delete", "project": getCurrentProject()},function(response) {
           if (response.result == "success")
           {
@@ -464,6 +469,12 @@ createTask = function(sender)
      var due = window.prompt("Due date", "MM-DD-YYYY");
      if (due == null) return;
      var dueunix = (new Date(due)).getTime()/1000;
+     if (dueunix == null || isNaN(dueunix))
+     {
+          window.alert("You have entered an invalid due date");
+          return;
+     }
+     console.log(dueunix);
      var description = window.prompt("Task description", "");
      if (description == null) return;
 

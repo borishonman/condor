@@ -437,6 +437,7 @@ module.exports = {
                     con.query("INSERT INTO "+config["database"]["prefix"]+"tasks (project,task,assigned,status,due,description,created) VALUES ('"+project+"','"+name+"','','No Work Done',FROM_UNIXTIME("+due+"),'"+desc+"',FROM_UNIXTIME("+Math.floor(Date.now() / 1000)+"))",function(err,result) {
                          if (err)
                          {
+                              console.warn(err);
                               callback(DBResult.fail(err.code));
                               return;
                          }
