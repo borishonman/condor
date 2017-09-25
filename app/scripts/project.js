@@ -81,9 +81,12 @@ var deleteProject = function()
                     if (projects[p].innerHTML == getCurrentProjectTitle())
                          projects[p].parentNode.removeChild(projects[p]);
                }
-               document.getElementById("content").innerHTML = "";
+               Condor.GetHome(function(res) {
+                    document.getElementById('content').innerHTML = res;
+               });
+               document.title = "Condor | "+document.getElementById('user-team').innerHTML;
                document.getElementById('projects-delete').className = "nodisplay clickable";
-               history.pushState('data to be passed', "Home | Condor", "/");
+               history.pushState('data to be passed', "Condor | "+document.getElementById('user-team').innerHTML, "/");
 
           }
           else
