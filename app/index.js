@@ -61,7 +61,7 @@ var handleRequest = function(res, req, callback)
                }
                var members = DB.getAllMembers(function(res,members) {
                     var data = {
-                         "stylesheets": ["main.css","project.css"],
+                         "stylesheets": ["main.css","cookie.js","project.css"],
                          "scripts": ["condor-api.js","members.js"],
                          "members": members
                     };

@@ -333,8 +333,8 @@ function updateMyTaskList()
 }
 var sortFuncs = {
      "Task Name": function(a,b) {
-          var aname = Date.parse(a.getElementsByTagName('td')[0].innerHTML);
-          var bname = Date.parse(b.getElementsByTagName('td')[0].innerHTML);
+          var aname = a.getElementsByTagName('td')[0].innerHTML;
+          var bname = b.getElementsByTagName('td')[0].innerHTML;
           return bname < aname;
      },
      "Due Date (Soonest first)": function (a,b) {
@@ -367,14 +367,15 @@ var sortFuncs = {
           return bstatus < astatus;
      },
      "Assigned Member": function(a,b) {
-          var aass = Date.parse(a.getElementsByTagName('td')[1].innerHTML);
-          var bass = Date.parse(b.getElementsByTagName('td')[1].innerHTML);
+          var aass = a.getElementsByTagName('td')[1].innerHTML;
+          var bass = b.getElementsByTagName('td')[1].innerHTML;
           return bass < aass;
      }
 };
 function updateTaskList()
 {
      var tasks = [].slice.call(document.getElementById("project-all-tasks").getElementsByTagName('tr'));
+     tasks.splice(0,1);
 
      if (tasks.length == 0)
      {

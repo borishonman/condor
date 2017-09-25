@@ -706,7 +706,7 @@ module.exports = {
                     for (row in result)
                     { //parse each returned row from the database
                          var dueDate = ((result[row].due == null) ? new Date(0) : result[row].due);
-                         var dueFormat = dueDate.getMonth()+1 + "-" + dueDate.getDate() + "-"+ dueDate.getFullYear();
+                         var dueFormat = dueDate.getMonth()+1 + "/" + dueDate.getDate() + "/"+ dueDate.getFullYear();
                          tasks[row] = {
                               'name': result[row].task,
                               'assigned': result[row].assigned,

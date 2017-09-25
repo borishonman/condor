@@ -19,7 +19,7 @@ var toggleMemberCanCreate = function()
 {
      var user = window.prompt("User to toggle create permission on");
      if (user == null) return;
-     Condor.queryPermission({"permission": "togglecreateproject", "userid": user},function(res) {
+     Condor.queryPermission({"permission": "togglecreateproject", "userid": user, "token": getCookie("token")},function(res) {
           if (res.result != "success")
           {
                window.alert("Failed to toggle create project permission for '"+user+"':\n\n"+res.msg);
@@ -31,7 +31,6 @@ var toggleMemberCanCreate = function()
           {
                if (rows[r].getElementsByTagName('td')[0].innerHTML == user)
                {
-                    console.log(res);
                     rows[r].getElementsByTagName('td')[1].innerHTML = res.haspermission;
                     found = true;
                }
