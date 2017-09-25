@@ -63,10 +63,15 @@ function completeLogin(user)
                }
                document.getElementById('projects').getElementsByTagName('ul')[0].appendChild(newRow);
           }
-          //if no match was found but a project was requested in the URL, make the page display a 404
           if (selectedProject != "" && !match)
-          {
+          { //if no match was found but a project was requested in the URL, make the page display a 404
                changeProject(null);
+          }
+          else if (selectedProject == "")
+          { //if no project was selected display the home page
+               Condor.GetHome(function(res) {
+                    document.getElementById('content').innerHTML = res;
+               });
           }
           //check if the user can create projects
           Condor.queryPermission({"permission": "createproject"},function(res) {

@@ -24,7 +24,8 @@ var templates = {
      "main": "main.html",
      "project": "project.html",
      "members": "members.html",
-     "login": "login.html"
+     "login": "login.html",
+     "home": "home.html"
 };
 
 //compiled templates will be stored here

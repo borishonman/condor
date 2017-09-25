@@ -50,6 +50,17 @@ var Condor = {
           xmlhttp.setRequestHeader("Content-Type", "application/json");
           xmlhttp.send(null);
      },
+     GetHome: function(callback)
+     {
+          var xmlhttp = new XMLHttpRequest();
+          xmlhttp.addEventListener('load', function() {callback(this.responseText);});
+          xmlhttp.onerror = function(error) {
+               callback("Failed to connect to Condor server.");
+          };
+          xmlhttp.open("POST","/home/",true);
+          xmlhttp.setRequestHeader("Content-Type", "application/json");
+          xmlhttp.send(null);
+     },
 
      queryProject: function(query,callback)
      {
