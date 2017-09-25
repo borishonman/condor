@@ -466,12 +466,12 @@ createTask = function(sender)
 {
      var name = window.prompt("Task Name","A task");
      if (name == null) return;
-     var due = window.prompt("Due date", "MM-DD-YYYY");
+     var due = window.prompt("Due date", "MM/DD/YYYY");
      if (due == null) return;
      var dueunix = (new Date(due)).getTime()/1000;
      if (dueunix == null || isNaN(dueunix))
      {
-          window.alert("You have entered an invalid due date");
+          window.alert("You have entered an invalid due date, please use the format MM/DD/YYYY");
           return;
      }
      console.log(dueunix);
