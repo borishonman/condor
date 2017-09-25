@@ -166,7 +166,7 @@ function main()
 
 function openMembersWindow()
 {
-     window.open(window.location.protocol+"//"+window.location.hostname+"/members/");
+     window.open(window.location.protocol+"//"+window.location.hostname+"/members/"+getCookie("token"));
 }
 
 window.onload = main;

@@ -53,7 +53,7 @@ var handleRequest = function(res, req, callback)
      var m = r.exec(req.url);
      if (m)
      {
-          permsmod.getPermission({"permission": "cantogglecreateproject", "token": req.body.token},function(res) {
+          permsmod.getPermission({"permission": "cantogglecreateproject", "token": m[2]},function(res) {
                if (!res.haspermission)
                {
                     callback("<div id='noproject'>You do not have permission to view the members permission table</div>");
