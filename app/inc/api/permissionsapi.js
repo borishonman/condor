@@ -23,7 +23,7 @@ var handlers = {
      "createproject": function(query,callback)
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -38,7 +38,7 @@ var handlers = {
           var user = MM.getAuthUser(query["token"]);
           var project = query["project"];
 
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -52,7 +52,7 @@ var handlers = {
      {
           var user = MM.getAuthUser(query["token"]);
 
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -66,7 +66,7 @@ var handlers = {
      {
           var user = MM.getAuthUser(query["token"]);
 
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -117,7 +117,7 @@ var handlers = {
      "viewproject": function(query,callback)
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -149,7 +149,7 @@ var handlers = {
      "status": function(query,callback) //change task status
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -169,7 +169,7 @@ var handlers = {
      "createtask": function(query,callback) //create a task
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -188,7 +188,7 @@ var handlers = {
      "deletetask": function(query,callback) //delete a task
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -207,7 +207,7 @@ var handlers = {
      "assign": function(query,callback) //assign a task
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -226,7 +226,7 @@ var handlers = {
      "deassign": function(query,callback) //deassign a task
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -245,7 +245,7 @@ var handlers = {
      "editdate": function(query,callback) //edit a task's due date
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -264,7 +264,7 @@ var handlers = {
      "editdesc": function(query,callback) //edit a task's description
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -283,7 +283,7 @@ var handlers = {
      "add": function(query,callback) //add member to a project
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -302,7 +302,7 @@ var handlers = {
      "delete": function(query,callback) //delete member from a project
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -321,7 +321,7 @@ var handlers = {
      "promote": function(query,callback) //promote a member to project Manager
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
@@ -340,7 +340,7 @@ var handlers = {
      "demote": function(query,callback) //demote a member to member
      {
           var user = MM.getAuthUser(query["token"]);
-          if (user.username == null)
+          if (user == null)
           {
                callback({result: "fail", haspermission: false});
                return;
