@@ -109,6 +109,30 @@ var handlers = {
                }
           });
      },
+     "toggleismoderator": function(query,callback)
+     {
+          if (!MM.getIsUserAdmin(query["token"]))
+          {
+               callback({result: "fail", msg: "You do not have permission to do this!"});
+               return;
+          }
+          var user = query["userid"];
+          if (!MM.userExists(user,query["token"]))
+          {
+               callback({result: "fail", msg: "User '"+user+"' does not exist"});
+               return;
+          }
+          DB.toggleIsModerator(user,function(res,mod) {
+               if (res.success)
+               {
+                    callback({result: "success",haspermission: mod});
+               }
+               else
+               {
+                    callback({result: "fail",msg: res.msg});
+               }
+          });
+     },
      "getprojectlist": function(query,callback)
      {
           //everyone can get the projects list
@@ -361,17 +385,24 @@ var handlers = {
 var data = {
      getPermission: function(query,callback)
      {
+          if (query["token"] == "" || query["token"] == null || query["token"] == undefined)
+          {
+               callback({result: "success", haspermission: false});
+               return;
+          }
           if (query["permission"] in handlers) {
-               if (MM.getIsUserAdmin(query["token"]) && query["permission"] != "togglecreateproject")
-               {
-                    callback({result: "success", haspermission: true});
-                    return;
-               }
-               //execute the function
-               handlers[query["permission"]](query,function(res) {callback(res);});
+               DB.getIsModerator(MM.getAuthUser(query["token"]), function(result,mod) {
+                    if ((mod || MM.getIsUserAdmin(query["token"])) && query["permission"] != "togglecreateproject" && query["permission"] != "toggleismoderator")
+                    {
+                         callback({result: "success", haspermission: true});
+                         return;
+                    }
+                    //execute the function
+                    handlers[query["permission"]](query,function(res) {callback(res);});
+               });
           }
           else {
-               callback({result: "success", haspermission: false});
+               callback({result: "fail", haspermission: false, msg: "Command '"+query["permission"]+"' invalid"});
           }
      }
 };

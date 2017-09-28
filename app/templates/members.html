@@ -25,15 +25,18 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
           <tr class="header">
                <td class="header">User ID</td>
                <td class="header">Can Create Projects</td>
+               <td class="header">Is Global Moderator</td>
           </tr>
           {{#each members}}
           <tr class="regrow">
                <td class="regcell">{{this.userid}}</td>
                <td class="regcell">{{this.cancreateprojects}}</td>
+               <td class="regcell">{{this.ismoderator}}</td>
           </tr>
           {{/each}}
      </table>
      <div id="member-perms-buttons">
           <p class="button" onclick="toggleMemberCanCreate()">Add/Toggle User Create Permission</p>
+          <p class="button" onclick="toggleMemberIsModerator()">Add/Toggle User Moderate Permission</p>
      </div>
 </div>

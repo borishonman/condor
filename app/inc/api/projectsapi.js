@@ -30,12 +30,18 @@ var handlers = {
      "getprojectlist": function(query,callback) {
           module.exports.getAllProjects(function(projs) {
                var res = {};
-               for (p in projs)
-               {
-                    if (MM.getAuthUser(query["token"]) in projs[p]["members"] || (MM.getIsUserAdmin() && config["misc"]["adminseeall"]))
-                         res[p] = projs[p];
-               }
-               callback({result: "success", projs: res});
+               DB.getIsModerator(MM.getAuthUser(query["token"]), function(result,mod) {
+                    if (mod || MM.getIsUserAdmin())
+                         res = projs;
+                    else {
+                         for (p in projs)
+                         {
+                              if (MM.getAuthUser(query["token"]) in projs[p]["members"])
+                                   res[p] = projs[p];
+                         }
+                    }
+                    callback({result: "success", projs: res});
+               });
           });
      },
      "create": function(query,callback) {

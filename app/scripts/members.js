@@ -15,6 +15,47 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+var toggleMemberIsModerator = function()
+{
+     var user = window.prompt("User to toggle moderator permission on");
+     if (user == null) return;
+     Condor.queryPermission({"permission": "toggleismoderator", "userid": user, "token": getCookie("token")},function(res) {
+          if (res.result != "success")
+          {
+               window.alert("Failed to toggle global moderator permission for '"+user+"':\n\n"+res.msg);
+               return;
+          }
+          var rows = document.getElementById("members").getElementsByTagName('tr');
+          var found = false;
+          for (var r=0;r<rows.length;r++)
+          {
+               if (rows[r].getElementsByTagName('td')[0].innerHTML == user)
+               {
+                    rows[r].getElementsByTagName('td')[2].innerHTML = res.haspermission;
+                    found = true;
+               }
+          }
+          if (!found)
+          {
+               var newRow = document.createElement('tr');
+               newRow.className = "regrow";
+               var newRowId = document.createElement('td');
+               newRowId.className = "regcell";
+               newRowId.innerHTML = user;
+               newRow.appendChild(newRowId);
+               var newRowCanCreate = document.createElement('td');
+               newRowCanCreate.className = "regcell";
+               newRowCanCreate.innerHTML = '0';
+               newRow.appendChild(newRowCanCreate);
+               var newRowIsMod = document.createElement('td');
+               newRowIsMod.className = "regcell";
+               newRowIsMod.innerHTML = "1";
+               newRow.appendChild(newRowIsMod);
+               document.getElementById('members').getElementsByTagName('tbody')[0].appendChild(newRow);
+          }
+     });
+}
+
 var toggleMemberCanCreate = function()
 {
      var user = window.prompt("User to toggle create permission on");
@@ -47,6 +88,10 @@ var toggleMemberCanCreate = function()
                newRowCanCreate.className = "regcell";
                newRowCanCreate.innerHTML = '1';
                newRow.appendChild(newRowCanCreate);
+               var newRowIsMod = document.createElement('td');
+               newRowIsMod.className = "regcell";
+               newRowIsMod.innerHTML = "0";
+               newRow.appendChild(newRowIsMod);
                document.getElementById('members').getElementsByTagName('tbody')[0].appendChild(newRow);
           }
      });

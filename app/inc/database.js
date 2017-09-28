@@ -135,6 +135,59 @@ module.exports = {
                });
           });
      },
+     toggleIsModerator: function(user,callback)
+     {
+          //first, make sure there is an entry in the table
+          con.query("SELECT ismoderator FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
+               if (result.length == 0)
+               { //no entry, so add one
+                    con.query("INSERT INTO "+config["database"]["prefix"]+"permissions (userid,ismoderator) VALUES ('"+user+"',true)",function(err,result) {
+                         if (err)
+                         { //deny the permission if an error occurred
+                              callback(DBResult.fail(err.code),false);
+                              return;
+                         }
+                         if (result.affectedRows > 0)
+                         {
+                              callback(DBResult.success,true);
+                         }
+                    });
+                    return;
+               }
+               //otherwise toggle the thing
+               con.query("UPDATE "+config["database"]["prefix"]+"permissions SET ismoderator = !ismoderator WHERE userid='"+user+"'",function(err,result) {
+                    if (err)
+                    { //deny the permission if an error occurred
+                         callback(DBResult.fail(err.code),false);
+                         return;
+                    }
+                    if (result.affectedRows > 0)
+                    {
+                         con.query("SELECT ismoderator FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
+                              callback(DBResult.success,result[0].ismoderator);
+                         });
+                    }
+                    else
+                    {
+                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"),false);
+                    }
+               });
+          });
+     },
+     getIsModerator: function(user, callback)
+     {
+          con.query ("SELECT ismoderator FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
+               if (err)
+               {
+                    callback(DBResult.fail(err.code),false);
+                    return;
+               }
+               if (result.length == 0)
+                    callback(DBResult.success, false);
+               else
+                    callback(DBResult.success, result[0].ismoderator)
+          });
+     },
      getAllMembers: function(callback)
      {
           con.query("SELECT * FROM "+config["database"]["prefix"]+"permissions",function(err,result) {
@@ -146,7 +199,7 @@ module.exports = {
                var members = [];
                for (row in result)
                {
-                    members.push({"userid": result[row].userid, "cancreateprojects": result[row].cancreateprojects});
+                    members.push({"userid": result[row].userid, "cancreateprojects": result[row].cancreateprojects, "ismoderator": result[row].ismoderator});
                }
                callback(DBResult.success,members);
           });

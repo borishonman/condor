@@ -61,8 +61,8 @@ var handleRequest = function(res, req, callback)
                }
                var members = DB.getAllMembers(function(res,members) {
                     var data = {
-                         "stylesheets": ["main.css","cookie.js","project.css"],
-                         "scripts": ["condor-api.js","members.js"],
+                         "stylesheets": ["main.css","project.css"],
+                         "scripts": ["condor-api.js","cookie.js","members.js"],
                          "members": members
                     };
                     callback(t.getHTML("members",data,req.headers['user-agent']));
