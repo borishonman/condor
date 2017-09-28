@@ -31,6 +31,41 @@ var h2 = "";
 var app = express();
 var appforward = express();
 
+function mysql_real_escape_string_json (json) {
+     for (var k in json)
+     {
+          if (json[k].constructor == [].constructor || json[k].constructor == {}.constructor)
+          {
+               mysql_real_escape_string_json(json[k]);
+          }
+          else if (json[k].constructor == "a".constructor)
+          {
+               json[k] = json[k].replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
+                    switch (char) {
+                         case "\0":
+                         return "\\0";
+                         case "\x08":
+                         return "\\b";
+                         case "\x09":
+                         return "\\t";
+                         case "\x1a":
+                         return "\\z";
+                         case "\n":
+                         return "\\n";
+                         case "\r":
+                         return "\\r";
+                         case "\"":
+                         case "'":
+                         case "\\":
+                         case "%":
+                         return "\\"+char; // prepends a backslash to backslash, percent,
+                         // and double/single quotes
+                    }
+               });
+          }
+     }
+}
+
 function checkBinServe(req,res)
 {
      var r = /\/(images|fonts|scripts|styles)\/(.*)/g;
@@ -61,13 +96,16 @@ function checkBinServe(req,res)
 
 function checkApiServe(req,res)
 {
+     var sanitizedBody = req.body;
+     mysql_real_escape_string_json(sanitizedBody);
+
      var r = /\/api\/([^\/]*)\/?([^\?]*)?/g;
      var m = r.exec(req.url);
      if (m)
      {
           if (m[1] == "project")
           {
-               projectsmod.processAPICall(req.body,function(resp) {
+               projectsmod.processAPICall(sanitizedBody,function(resp) {
                     res.writeHead(200, {"Content-Type": "application/json"});
                     res.write(JSON.stringify(resp));
                     res.end();
@@ -75,7 +113,7 @@ function checkApiServe(req,res)
           }
           else if (m[1] == "member")
           {
-               membersmod.processAPICall(req.body,function(resp)  {
+               membersmod.processAPICall(sanitizedBody,function(resp)  {
                     res.writeHead(200, {"Content-Type": "application/json"});
                     res.write(JSON.stringify(resp));
                     res.end();
@@ -83,7 +121,7 @@ function checkApiServe(req,res)
           }
           else if (m[1] == "permission")
           {
-               permsmod.getPermission(req.body,function(resp)  {
+               permsmod.getPermission(sanitizedBody,function(resp)  {
                     res.writeHead(200, {"Content-Type": "application/json"});
                     res.write(JSON.stringify(resp));
                     res.end();
@@ -91,7 +129,7 @@ function checkApiServe(req,res)
           }
           else if (m[1] == "auth")
           {
-               authmod.processAPICall(req.body,function(resp)  {
+               authmod.processAPICall(sanitizedBody,function(resp)  {
                     res.writeHead(200, {"Content-Type": "application/json"});
                     res.write(JSON.stringify(resp));
                     res.end();
