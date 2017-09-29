@@ -49,60 +49,83 @@ module.exports = {
      },
      userIsOwner: function(userid,project,callback)
      {
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project+"' AND creator='"+userid+"'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code),null);
-                    return;
-               }
-               callback(DBResult.success,(result.length > 0));
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project+"' AND creator='"+userid+"'",function(err,result) {
+                    if (err)
+                    {
+                         callback(DBResult.fail(err.code),null);
+                         return;
+                    }
+                    callback(DBResult.success,(result.length > 0));
+               });
           });
      },
      userIsProjectManager: function(userid,project,callback)
      {
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE userid='"+userid+"' AND project='"+project+"' AND role='Project Manager'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code),null);
-                    return;
-               }
-               callback(DBResult.success,(result.length > 0));
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE userid='"+userid+"' AND project='"+project+"' AND role='Project Manager'",function(err,result) {
+                    if (err)
+                    {
+                         callback(DBResult.fail(err.code),null);
+                         return;
+                    }
+                    callback(DBResult.success,(result.length > 0));
+               });
           });
      },
      userIsMember: function(userid,project,callback)
      {
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE userid='"+userid+"' AND project='"+project+"'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code),null);
-                    return;
-               }
-               callback(DBResult.success,(result.length > 0));
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE userid='"+userid+"' AND project='"+project+"'",function(err,result) {
+                    if (err)
+                    {
+                         callback(DBResult.fail(err.code),null);
+                         return;
+                    }
+                    callback(DBResult.success,(result.length > 0));
+               });
           });
      },
      userCanCreateProjects: function(user,callback)
      {
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
-               if (err)
-               { //deny the permission if an error occurred
-                    callback(DBResult.fail(err.code),false);
-                    return;
-               }
-               if (result.length == 0)
-               { //deny the permission if user was not found in permissions table
-                    callback(DBResult.success,false);
-                    return;
-               }
-               callback(DBResult.success,result[0].cancreateprojects);
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
+                    if (err)
+                    { //deny the permission if an error occurred
+                         callback(DBResult.fail(err.code),false);
+                         return;
+                    }
+                    if (result.length == 0)
+                    { //deny the permission if user was not found in permissions table
+                         callback(DBResult.success,false);
+                         return;
+                    }
+                    callback(DBResult.success,result[0].cancreateprojects);
+               });
           });
      },
      toggleCreateProject: function(user,callback)
      {
           //first, make sure there is an entry in the table
-          con.query("SELECT cancreateprojects FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
-               if (result.length == 0)
-               { //no entry, so add one
-                    con.query("INSERT INTO "+config["database"]["prefix"]+"permissions (userid,cancreateprojects) VALUES ('"+user+"',true)",function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT cancreateprojects FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
+                    if (result.length == 0)
+                    { //no entry, so add one
+                         con.query("INSERT INTO "+config["database"]["prefix"]+"permissions (userid,cancreateprojects) VALUES ('"+user+"',true)",function(err,result) {
+                              if (err)
+                              { //deny the permission if an error occurred
+                                   callback(DBResult.fail(err.code),false);
+                                   return;
+                              }
+                              if (result.affectedRows > 0)
+                              {
+                                   callback(DBResult.success,true);
+                              }
+                         });
+                         return;
+                    }
+                    //otherwise toggle the thing
+                    con.query("UPDATE "+config["database"]["prefix"]+"permissions SET cancreateprojects = !cancreateprojects WHERE userid='"+user+"'",function(err,result) {
                          if (err)
                          { //deny the permission if an error occurred
                               callback(DBResult.fail(err.code),false);
@@ -110,38 +133,42 @@ module.exports = {
                          }
                          if (result.affectedRows > 0)
                          {
-                              callback(DBResult.success,true);
+                              con.connect(function(err) {
+                                   con.query("SELECT cancreateprojects FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
+                                        callback(DBResult.success,result[0].cancreateprojects);
+                                   });
+                              });
+                         }
+                         else
+                         {
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"),false);
                          }
                     });
-                    return;
-               }
-               //otherwise toggle the thing
-               con.query("UPDATE "+config["database"]["prefix"]+"permissions SET cancreateprojects = !cancreateprojects WHERE userid='"+user+"'",function(err,result) {
-                    if (err)
-                    { //deny the permission if an error occurred
-                         callback(DBResult.fail(err.code),false);
-                         return;
-                    }
-                    if (result.affectedRows > 0)
-                    {
-                         con.query("SELECT cancreateprojects FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
-                              callback(DBResult.success,result[0].cancreateprojects);
-                         });
-                    }
-                    else
-                    {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"),false);
-                    }
                });
           });
      },
      toggleIsModerator: function(user,callback)
      {
           //first, make sure there is an entry in the table
-          con.query("SELECT ismoderator FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
-               if (result.length == 0)
-               { //no entry, so add one
-                    con.query("INSERT INTO "+config["database"]["prefix"]+"permissions (userid,ismoderator) VALUES ('"+user+"',true)",function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT ismoderator FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
+                    if (result.length == 0)
+                    { //no entry, so add one
+                         con.query("INSERT INTO "+config["database"]["prefix"]+"permissions (userid,ismoderator) VALUES ('"+user+"',true)",function(err,result) {
+                              if (err)
+                              { //deny the permission if an error occurred
+                                   callback(DBResult.fail(err.code),false);
+                                   return;
+                              }
+                              if (result.affectedRows > 0)
+                              {
+                                   callback(DBResult.success,true);
+                              }
+                         });
+                         return;
+                    }
+                    //otherwise toggle the thing
+                    con.query("UPDATE "+config["database"]["prefix"]+"permissions SET ismoderator = !ismoderator WHERE userid='"+user+"'",function(err,result) {
                          if (err)
                          { //deny the permission if an error occurred
                               callback(DBResult.fail(err.code),false);
@@ -149,84 +176,76 @@ module.exports = {
                          }
                          if (result.affectedRows > 0)
                          {
-                              callback(DBResult.success,true);
+                              con.query("SELECT ismoderator FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
+                                   callback(DBResult.success,result[0].ismoderator);
+                              });
+                         }
+                         else
+                         {
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"),false);
                          }
                     });
-                    return;
-               }
-               //otherwise toggle the thing
-               con.query("UPDATE "+config["database"]["prefix"]+"permissions SET ismoderator = !ismoderator WHERE userid='"+user+"'",function(err,result) {
-                    if (err)
-                    { //deny the permission if an error occurred
-                         callback(DBResult.fail(err.code),false);
-                         return;
-                    }
-                    if (result.affectedRows > 0)
-                    {
-                         con.query("SELECT ismoderator FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
-                              callback(DBResult.success,result[0].ismoderator);
-                         });
-                    }
-                    else
-                    {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"),false);
-                    }
                });
           });
      },
      getIsModerator: function(user, callback)
      {
-          con.query ("SELECT ismoderator FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code),false);
-                    return;
-               }
-               if (result.length == 0)
+          con.connect(function(err) {
+               con.query ("SELECT ismoderator FROM "+config["database"]["prefix"]+"permissions WHERE userid='"+user+"'",function(err,result) {
+                    if (err)
+                    {
+                         callback(DBResult.fail(err.code),false);
+                         return;
+                    }
+                    if (result.length == 0)
                     callback(DBResult.success, false);
-               else
+                    else
                     callback(DBResult.success, result[0].ismoderator)
+               });
           });
      },
      getAllMembers: function(callback)
      {
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"permissions",function(err,result) {
-               if (err)
-               { //deny the permission if an error occurred
-                    callback(DBResult.fail(err.code),[]);
-                    return;
-               }
-               var members = [];
-               for (row in result)
-               {
-                    members.push({"userid": result[row].userid, "cancreateprojects": result[row].cancreateprojects, "ismoderator": result[row].ismoderator});
-               }
-               callback(DBResult.success,members);
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"permissions",function(err,result) {
+                    if (err)
+                    { //deny the permission if an error occurred
+                         callback(DBResult.fail(err.code),[]);
+                         return;
+                    }
+                    var members = [];
+                    for (row in result)
+                    {
+                         members.push({"userid": result[row].userid, "cancreateprojects": result[row].cancreateprojects, "ismoderator": result[row].ismoderator});
+                    }
+                    callback(DBResult.success,members);
+               });
           });
      },
      userAssignedTask: function(project,task,user,callback)
      {
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"' AND assigned='"+user+"'",function(err,result) {
-               if (err)
-               { //deny the permission if an error occurred
-                    callback(DBResult.fail(err.code),false);
-                    return;
-               }
-               if (result.length > 0)
-               {
-                    callback(DBResult.success,true);
-               }
-               else
-               {
-                    callback(DBResult.success,false);
-               }
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"' AND assigned='"+user+"'",function(err,result) {
+                    if (err)
+                    { //deny the permission if an error occurred
+                         callback(DBResult.fail(err.code),false);
+                         return;
+                    }
+                    if (result.length > 0)
+                    {
+                         callback(DBResult.success,true);
+                    }
+                    else
+                    {
+                         callback(DBResult.success,false);
+                    }
+               });
           });
      },
      addMember: function(userid,role,project,callback)
      {
-          if (config["database"]["connector"] == "mysql")
-          {
-               //make sure the project exists
+          //make sure the project exists
+          con.connect(function(err) {
                con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project+"'",function(err,result) {
                     if (err)
                     {
@@ -267,109 +286,110 @@ module.exports = {
                          });
                     });
                });
-          }
-          else if (config["database"]["connector"] == "postgresql")
-          {
-               callback(DBResult.fail("Postgres not yet implemented"));
-          }
+          });
      },
      deleteMember: function(userid,project,callback)
      {
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code));
-                    return;
-               }
-               if (result.length == 0)
-               {
-                    callback(DBResult.fail("Member is not assigned to this project"));
-                    return;
-               }
-               con.query("DELETE FROM "+config["database"]["prefix"]+"member_assignments WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
                     if (err)
                     {
                          callback(DBResult.fail(err.code));
                          return;
                     }
-                    //make sure something was changed
-                    if (result.affectedRows == 0)
+                    if (result.length == 0)
                     {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                         callback(DBResult.fail("Member is not assigned to this project"));
                          return;
                     }
-                    callback(DBResult.success);
+                    con.query("DELETE FROM "+config["database"]["prefix"]+"member_assignments WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
+                         if (err)
+                         {
+                              callback(DBResult.fail(err.code));
+                              return;
+                         }
+                         //make sure something was changed
+                         if (result.affectedRows == 0)
+                         {
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              return;
+                         }
+                         callback(DBResult.success);
+                    });
                });
           });
      },
      promoteMember: function(userid,project,callback)
      {
           //make sure the member assignment exists
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code));
-                    return;
-               }
-               if (result.length == 0)
-               {
-                    callback(DBResult.fail("Member assignment does not exist"));
-                    return;
-               }
-               //set the new role
-               con.query("UPDATE "+config["database"]["prefix"]+"member_assignments SET role='Project Manager' WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
                     if (err)
                     {
                          callback(DBResult.fail(err.code));
                          return;
                     }
-                    //make sure something was changed
-                    if (result.affectedRows == 0)
+                    if (result.length == 0)
                     {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                         callback(DBResult.fail("Member assignment does not exist"));
                          return;
                     }
-                    callback(DBResult.success);
+                    //set the new role
+                    con.query("UPDATE "+config["database"]["prefix"]+"member_assignments SET role='Project Manager' WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
+                         if (err)
+                         {
+                              callback(DBResult.fail(err.code));
+                              return;
+                         }
+                         //make sure something was changed
+                         if (result.affectedRows == 0)
+                         {
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              return;
+                         }
+                         callback(DBResult.success);
+                    });
                });
           });
      },
      demoteMember: function(userid,project,callback)
      {
           //make sure the member assignment exists
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code));
-                    return;
-               }
-               if (result.length == 0)
-               {
-                    callback(DBResult.fail("Member assignment does not exist"));
-                    return;
-               }
-               //set the new role
-               con.query("UPDATE "+config["database"]["prefix"]+"member_assignments SET role='Member' WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
                     if (err)
                     {
                          callback(DBResult.fail(err.code));
                          return;
                     }
-                    //make sure something was changed
-                    if (result.affectedRows == 0)
+                    if (result.length == 0)
                     {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                         callback(DBResult.fail("Member assignment does not exist"));
                          return;
                     }
-                    callback(DBResult.success);
+                    //set the new role
+                    con.query("UPDATE "+config["database"]["prefix"]+"member_assignments SET role='Member' WHERE project='"+project+"' AND userid='"+userid+"'", function(err,result) {
+                         if (err)
+                         {
+                              callback(DBResult.fail(err.code));
+                              return;
+                         }
+                         //make sure something was changed
+                         if (result.affectedRows == 0)
+                         {
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              return;
+                         }
+                         callback(DBResult.success);
+                    });
                });
           });
      },
 
      createProject: function(project,desc,creator,callback)
      {
-          if (config["database"]["connector"] == "mysql")
-          {
-               //TODO: Mattermost user check
+          //TODO: Mattermost user check
+          con.connect(function(err) {
                con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE title='"+project+"'", function(err, result) {
                     if (result.length > 0)
                     { //fail if the project already exists
@@ -399,20 +419,15 @@ module.exports = {
                                    });
                               }
                               else
-                                   callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
                          }
                     });
                });
-          }
-          else if (config["database"]["connector"] == "postgresql")
-          {
-               callback(DBResult.fail("Postgres not yet implemented"));
-          }
+          });
      },
      deleteProject: function(project,callback)
      {
-          if (config["database"]["connector"] == "mysql")
-          {
+          con.connect(function(err) {
                con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project.replace(/ /g,'_').toLowerCase()+"'", function(err, result) {
                     if (result.length == 0)
                     { //fail if the project doesn't exist
@@ -454,43 +469,72 @@ module.exports = {
                          });
                     });
                });
-          }
-          else if (config["database"]["connector"] == "postgresql")
-          {
-               callback(DBResult.fail("Postgres not yet implemented"));
-          }
+          });
      },
      createTask: function(project,name,due,desc,callback)
      {
           //make sure the project exists
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project.replace(/ /g,'_').toLowerCase()+"'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code));
-                    return;
-               }
-               if (result.length == 0)
-               {
-                    callback(DBResult.fail("Project does not exist!"));
-                    return;
-               }
-               //do not allow duplicate task names
-               con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+name+"'",function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project.replace(/ /g,'_').toLowerCase()+"'",function(err,result) {
                     if (err)
                     {
                          callback(DBResult.fail(err.code));
                          return;
                     }
-                    if (result.length > 0)
+                    if (result.length == 0)
                     {
-                         callback(DBResult.fail("Task already exists"));
+                         callback(DBResult.fail("Project does not exist!"));
                          return;
                     }
-                    //insert the new task into the database
-                    con.query("INSERT INTO "+config["database"]["prefix"]+"tasks (project,task,assigned,status,due,description,created) VALUES ('"+project+"','"+name+"','','No Work Done',FROM_UNIXTIME("+due+"),'"+desc+"',FROM_UNIXTIME("+Math.floor(Date.now() / 1000)+"))",function(err,result) {
+                    //do not allow duplicate task names
+                    con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+name+"'",function(err,result) {
                          if (err)
                          {
-                              console.warn(err);
+                              callback(DBResult.fail(err.code));
+                              return;
+                         }
+                         if (result.length > 0)
+                         {
+                              callback(DBResult.fail("Task already exists"));
+                              return;
+                         }
+                         //insert the new task into the database
+                         con.query("INSERT INTO "+config["database"]["prefix"]+"tasks (project,task,assigned,status,due,description,created) VALUES ('"+project+"','"+name+"','','No Work Done',FROM_UNIXTIME("+due+"),'"+desc+"',FROM_UNIXTIME("+Math.floor(Date.now() / 1000)+"))",function(err,result) {
+                              if (err)
+                              {
+                                   console.warn(err);
+                                   callback(DBResult.fail(err.code));
+                                   return;
+                              }
+                              if (result.affectedRows == 0)
+                              {
+                                   callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                                   return;
+                              }
+                              callback(DBResult.success);
+                         });
+                    });
+               });
+          });
+     },
+     deleteTask: function(project,task,callback)
+     {
+          //make sure the task exists
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
+                    if (err)
+                    {
+                         callback(DBResult.fail(err.code));
+                         return;
+                    }
+                    if (result.length == 0)
+                    {
+                         callback(DBResult.fail("Task does not exist"));
+                         return;
+                    }
+                    con.query("DELETE FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
+                         if (err)
+                         {
                               callback(DBResult.fail(err.code));
                               return;
                          }
@@ -504,272 +548,259 @@ module.exports = {
                });
           });
      },
-     deleteTask: function(project,task,callback)
-     {
-          //make sure the task exists
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code));
-                    return;
-               }
-               if (result.length == 0)
-               {
-                    callback(DBResult.fail("Task does not exist"));
-                    return;
-               }
-               con.query("DELETE FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
-                    if (err)
-                    {
-                         callback(DBResult.fail(err.code));
-                         return;
-                    }
-                    if (result.affectedRows == 0)
-                    {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
-                         return;
-                    }
-                    callback(DBResult.success);
-               });
-          });
-     },
      changeTaskStatus: function(project,task,status,callback)
      {
           //make sure the task exists
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code));
-                    return;
-               }
-               if (result.length == 0)
-               {
-                    callback(DBResult.fail("Task does not exist"));
-                    return;
-               }
-               //run the query to update the task
-               con.query("UPDATE "+config["database"]["prefix"]+"tasks SET status='"+status+"'", function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
                     if (err)
                     {
                          callback(DBResult.fail(err.code));
                          return;
                     }
-                    if (result.affectedRows == 0)
+                    if (result.length == 0)
                     {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                         callback(DBResult.fail("Task does not exist"));
                          return;
                     }
-                    callback(DBResult.success);
+                    //run the query to update the task
+                    con.query("UPDATE "+config["database"]["prefix"]+"tasks SET status='"+status+"'", function(err,result) {
+                         if (err)
+                         {
+                              callback(DBResult.fail(err.code));
+                              return;
+                         }
+                         if (result.affectedRows == 0)
+                         {
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              return;
+                         }
+                         callback(DBResult.success);
+                    });
                });
           });
      },
      assignTask: function(project,task,member,callback)
      {
           //make sure the task exists
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code));
-                    return;
-               }
-               if (result.length == 0)
-               {
-                    callback(DBResult.fail("Task does not exist"));
-                    return;
-               }
-               //update the assigned member id in the database
-               con.query("UPDATE "+config["database"]["prefix"]+"tasks SET assigned='"+member+"' WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
                     if (err)
                     {
                          callback(DBResult.fail(err.code));
                          return;
                     }
-                    if (result.affectedRows == 0)
+                    if (result.length == 0)
                     {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                         callback(DBResult.fail("Task does not exist"));
                          return;
                     }
-                    callback(DBResult.success);
+                    //update the assigned member id in the database
+                    con.query("UPDATE "+config["database"]["prefix"]+"tasks SET assigned='"+member+"' WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
+                         if (err)
+                         {
+                              callback(DBResult.fail(err.code));
+                              return;
+                         }
+                         if (result.affectedRows == 0)
+                         {
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              return;
+                         }
+                         callback(DBResult.success);
+                    });
                });
           });
      },
      deassignTask: function(project,task,callback)
      {
           //make sure the task exists
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code));
-                    return;
-               }
-               if (result.length == 0)
-               {
-                    callback(DBResult.fail("Task does not exist"));
-                    return;
-               }
-               //update the assigned member id in the database
-               con.query("UPDATE "+config["database"]["prefix"]+"tasks SET assigned='' WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
                     if (err)
                     {
                          callback(DBResult.fail(err.code));
                          return;
                     }
-                    if (result.affectedRows == 0)
+                    if (result.length == 0)
                     {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                         callback(DBResult.fail("Task does not exist"));
                          return;
                     }
-                    callback(DBResult.success);
+                    //update the assigned member id in the database
+                    con.query("UPDATE "+config["database"]["prefix"]+"tasks SET assigned='' WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
+                         if (err)
+                         {
+                              callback(DBResult.fail(err.code));
+                              return;
+                         }
+                         if (result.affectedRows == 0)
+                         {
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              return;
+                         }
+                         callback(DBResult.success);
+                    });
                });
           });
      },
      changeDate: function(project,task,date,callback)
      {
           //make sure the task exists
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code));
-                    return;
-               }
-               if (result.length == 0)
-               {
-                    callback(DBResult.fail("Task does not exist"));
-                    return;
-               }
-               //update the assigned member id in the database
-               con.query("UPDATE "+config["database"]["prefix"]+"tasks SET due=FROM_UNIXTIME("+date+") WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
                     if (err)
                     {
                          callback(DBResult.fail(err.code));
                          return;
                     }
-                    if (result.affectedRows == 0)
+                    if (result.length == 0)
                     {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                         callback(DBResult.fail("Task does not exist"));
                          return;
                     }
-                    callback(DBResult.success);
+                    //update the assigned member id in the database
+                    con.query("UPDATE "+config["database"]["prefix"]+"tasks SET due=FROM_UNIXTIME("+date+") WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
+                         if (err)
+                         {
+                              callback(DBResult.fail(err.code));
+                              return;
+                         }
+                         if (result.affectedRows == 0)
+                         {
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              return;
+                         }
+                         callback(DBResult.success);
+                    });
                });
           });
      },
      changeDesc: function(project,task,desc,callback)
      {
           //make sure the task exists
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code));
-                    return;
-               }
-               if (result.length == 0)
-               {
-                    callback(DBResult.fail("Task does not exist"));
-                    return;
-               }
-               //update the assigned member id in the database
-               con.query("UPDATE "+config["database"]["prefix"]+"tasks SET description='"+desc+"' WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
                     if (err)
                     {
                          callback(DBResult.fail(err.code));
                          return;
                     }
-                    if (result.affectedRows == 0)
+                    if (result.length == 0)
                     {
-                         callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                         callback(DBResult.fail("Task does not exist"));
                          return;
                     }
-                    callback(DBResult.success);
+                    //update the assigned member id in the database
+                    con.query("UPDATE "+config["database"]["prefix"]+"tasks SET description='"+desc+"' WHERE project='"+project+"' AND task='"+task+"'",function(err,result) {
+                         if (err)
+                         {
+                              callback(DBResult.fail(err.code));
+                              return;
+                         }
+                         if (result.affectedRows == 0)
+                         {
+                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              return;
+                         }
+                         callback(DBResult.success);
+                    });
                });
           });
      },
 
      getAllProjects: function(callback)
      {
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"projects", function(err, result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code),null);
-               }
-               else
-               {
-                    var projects = {};
-                    for (row in result)
-                    { //parse each returned row from the database
-                         projects[result[row].title.replace(/ /g,"_").toLowerCase()] = {
-                              'title': result[row].title,
-                              'description': result[row].description,
-                              'creator': result[row].creator,
-                              'members': [], //this will be filled by the caller
-                              'tasks': [], //this will be filled by the caller
-                              'mytasks': [], //this will be filled by the caller
-                              'active': ""
-                         };
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"projects", function(err, result) {
+                    if (err)
+                    {
+                         callback(DBResult.fail(err.code),null);
                     }
-                    callback(DBResult.success,projects);
-               }
+                    else
+                    {
+                         var projects = {};
+                         for (row in result)
+                         { //parse each returned row from the database
+                              projects[result[row].title.replace(/ /g,"_").toLowerCase()] = {
+                                   'title': result[row].title,
+                                   'description': result[row].description,
+                                   'creator': result[row].creator,
+                                   'members': [], //this will be filled by the caller
+                                   'tasks': [], //this will be filled by the caller
+                                   'mytasks': [], //this will be filled by the caller
+                                   'active': ""
+                              };
+                         }
+                         callback(DBResult.success,projects);
+                    }
+               });
           });
      },
      getProjectMembers: function(project,callback)
      {
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project+"'", function(err, result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code),null);
-                    return;
-               }
-               if (result.length == 0)
-               { //fail if the project doesn't exist
-                    callback(DBResult.fail("Project does not exist"));
-                    return;
-               }
-               con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE project='"+project+"'", function(err, result) {
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project+"'", function(err, result) {
                     if (err)
                     {
                          callback(DBResult.fail(err.code),null);
                          return;
                     }
-                    var members = {};
-                    for (row in result)
-                    { //parse each returned row from the database
-                         members[result[row].userid] = {
-                              'username': result[row].userid,
-                              'role': result[row].role
-                         };
+                    if (result.length == 0)
+                    { //fail if the project doesn't exist
+                         callback(DBResult.fail("Project does not exist"));
+                         return;
                     }
-                    callback(DBResult.success,members);
+                    con.query("SELECT * FROM "+config["database"]["prefix"]+"member_assignments WHERE project='"+project+"'", function(err, result) {
+                         if (err)
+                         {
+                              callback(DBResult.fail(err.code),null);
+                              return;
+                         }
+                         var members = {};
+                         for (row in result)
+                         { //parse each returned row from the database
+                              members[result[row].userid] = {
+                                   'username': result[row].userid,
+                                   'role': result[row].role
+                              };
+                         }
+                         callback(DBResult.success,members);
+                    });
                });
           });
      },
      getProjectTasks: function(project,callback)
      {
-          con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project+"'", function(err, result) {
-               if (err)
-               {
-                    callback(DBResult.fail(err.code),null);
-                    return;
-               }
-               if (result.length == 0)
-               { //fail if the project doesn't exist
-                    callback(DBResult.fail("Project does not exist"));
-                    return;
-               }
-               con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"'",function(err,result) {
-                    var tasks = [];
-                    for (row in result)
-                    { //parse each returned row from the database
-                         var dueDate = ((result[row].due == null) ? new Date(0) : result[row].due);
-                         var dueFormat = dueDate.getMonth()+1 + "/" + dueDate.getDate() + "/"+ dueDate.getFullYear();
-                         tasks[row] = {
-                              'name': result[row].task,
-                              'assigned': result[row].assigned,
-                              'status': result[row].status,
-                              'due': dueFormat,
-                              'description': result[row].description
-                         };
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project+"'", function(err, result) {
+                    if (err)
+                    {
+                         callback(DBResult.fail(err.code),null);
+                         return;
                     }
-                    callback(DBResult.success,tasks);
+                    if (result.length == 0)
+                    { //fail if the project doesn't exist
+                         callback(DBResult.fail("Project does not exist"));
+                         return;
+                    }
+                    con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE project='"+project+"'",function(err,result) {
+                         var tasks = [];
+                         for (row in result)
+                         { //parse each returned row from the database
+                              var dueDate = ((result[row].due == null) ? new Date(0) : result[row].due);
+                              var dueFormat = dueDate.getMonth()+1 + "/" + dueDate.getDate() + "/"+ dueDate.getFullYear();
+                              tasks[row] = {
+                                   'name': result[row].task,
+                                   'assigned': result[row].assigned,
+                                   'status': result[row].status,
+                                   'due': dueFormat,
+                                   'description': result[row].description
+                              };
+                         }
+                         callback(DBResult.success,tasks);
+                    });
                });
           });
-     }
+     },
 };
