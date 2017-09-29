@@ -153,6 +153,15 @@ a
      color: white;
      margin-top: 20px;
 }
+#app-downloads
+{
+     font-size: 28pt;
+     color: black;
+     font-family: "Boogaloo",Tahoma,Arial,sans-serif;
+     display: block;
+     margin-top: 10px;
+     text-decoration: underline;
+}
 #content
 {
      width: 100%;

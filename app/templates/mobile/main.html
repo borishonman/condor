@@ -19,6 +19,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 <head>
      {{#each stylesheets}}<link rel="stylesheet" href="/styles/mobile/{{{this}}}">{{/each}}
      {{#each scripts}}<script src="/scripts/mobile/{{this}}"></script>{{/each}}
+     <link rel="icon" type="image/png" href="/images/favicon.png">
      <title>Condor</title>
 </head>
 <body>
@@ -38,6 +39,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
                                    <a href="/"><div id="user-team">Condor</div></a>
                                    <div id="user-id">Task Management Engine</div>
                                    <button type="button" class="nodisplay" onclick="logout()" id="logout">Logout</button>
+                                   <a href="https://github.com/borishonman/condor-android/releases" id="app-downloads">Download the Android App!</a>
                               </td>
                               <td>
                                    <div class="nodisplay clickable" onclick="openMembersWindow()" id="togglemember"></div>
