@@ -28,24 +28,14 @@ var DBResult = {
 };
 
 module.exports = {
-     connect: function(callback)
+     setup: function()
      {
-          if (config["database"]["connector"] == "mysql")
-          {
-               con = mysql.createConnection({
-                    host: config["database"]["host"],
-                    database: config["database"]["database"],
-                    user: config["database"]["user"],
-                    password: config["database"]["password"]
-               });
-               con.connect(function(err) {
-                    callback(err);
-               });
-          }
-          else if (config["database"]["connector"] == "postgresql")
-          {
-               callback("Postgres not yet implemented");
-          }
+          con = mysql.createConnection({
+               host: config["database"]["host"],
+               database: config["database"]["database"],
+               user: config["database"]["user"],
+               password: config["database"]["password"]
+          });
      },
      userIsOwner: function(userid,project,callback)
      {

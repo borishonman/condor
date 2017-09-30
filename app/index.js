@@ -99,15 +99,9 @@ var handleRequest = function(res, req, callback)
      callback(t.getHTML("main", data, req.headers['user-agent']));
 }
 
-//on launch, attempt to connect to DB first
-DB.connect(function(err){
-     if (err)
-     {
-          console.warn("Failed to connect to database: "+err);
-          return;
-     }
-     projectsmod.getAllProjects(function(projs) {
-          t.load(); //load and compile all of the templates
-          srv.start(handleRequest); //now we can start the server
-     });
+//on launch, initialize the DB library first
+DB.setup();
+projectsmod.getAllProjects(function(projs) {
+     t.load(); //load and compile all of the templates
+     srv.start(handleRequest); //now we can start the server
 });
