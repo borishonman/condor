@@ -103,6 +103,14 @@ function checkApiServe(req,res)
      var m = r.exec(req.url);
      if (m)
      {
+          if (req.body == undefined || req.body == null)
+          {
+               res.writeHead(500, {"Content-Type": "application/json"});
+               res.write("");
+               res.end();
+               return true;
+          }
+
           if (m[1] == "project")
           {
                projectsmod.processAPICall(sanitizedBody,function(resp) {
