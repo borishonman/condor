@@ -379,6 +379,21 @@ var handlers = {
                     callback({result: "fail", haspermission: false});
                }
           });
+     },
+     "getmemberpermissiontable": function(query,callback)
+     {
+          if (!MM.getIsUserAdmin(query["token"]))
+          {
+               callback({result: "fail", msg: "You do not have permission to do this!"});
+               return;
+          }
+          DB.getAllMembers(function(res,members) {
+               if (!res.success)
+               {
+                    callback({result: "fail", msg: res.msg});
+               }
+               callback({result: "success", "members": members});
+          });
      }
 };
 
@@ -392,7 +407,7 @@ var data = {
           }
           if (query["permission"] in handlers) {
                DB.getIsModerator(MM.getAuthUser(query["token"]), function(result,mod) {
-                    if ((mod || MM.getIsUserAdmin(query["token"])) && query["permission"] != "togglecreateproject" && query["permission"] != "toggleismoderator")
+                    if ((mod || MM.getIsUserAdmin(query["token"])) && query["permission"] != "togglecreateproject" && query["permission"] != "toggleismoderator" && query["permission"] != "getmemberpermissiontable")
                     {
                          callback({result: "success", haspermission: true});
                          return;
