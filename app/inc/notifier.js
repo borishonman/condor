@@ -55,7 +55,7 @@ var methods = {
      addedToProject: function(user,project) {
           if (config["notifications"]["disableall"] || !config["notifications"]["useraddedtoproject"])
                return;
-          var message = "[NOTIFY] You have been added to the project \"**"+project+"**\". View it here: "+config["server"]["host"]+"/projects/"+project.replace(/ /g, "_").toLowerCase();
+          var message = "[NOTIFY] You have been added to the project \"**"+project+"**\". View it here: "+config["server"]["host"]+"/project/"+project.replace(/ /g, "_").toLowerCase();
           return MM.sendMessage(config["mattermost"]["user"],user,message,myToken);
      },
      assignedTask: function(user,taskName,due,project) {
@@ -63,7 +63,7 @@ var methods = {
                return;
           var dueDate = new Date(due*1000);
           var dueDateString = dueDate.getMonth()+1 + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
-          var message = "[NOTIFY] You have been assigned \"**"+taskName+"**\" in the project \"**"+project+"**\". This task is due on "+dueDateString+". More information: "+config["server"]["host"]+"/projects/"+project.replace(/ /g, "_").toLowerCase();
+          var message = "[NOTIFY] You have been assigned \"**"+taskName+"**\" in the project \"**"+project+"**\". This task is due on "+dueDateString+". More information: "+config["server"]["host"]+"/project/"+project.replace(/ /g, "_").toLowerCase();
           return MM.sendMessage(config["mattermost"]["user"],user,message,myToken);
      }
 };
