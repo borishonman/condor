@@ -482,10 +482,27 @@ module.exports = {
                                    });
                               }
                               else
-                              con.end()
-                              callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              {
+                                   con.end()
+                                   callback(DBResult.fail("No database rows were affected. Database was not changed for some reason"));
+                              }
                          }
                     });
+               });
+          });
+     },
+     projectName: function(project,callback)
+     {
+          var con = mysql.createConnection(dbconfig);
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project+"'", function(err, result) {
+                    if (result.length == 0)
+                    {
+                         callback(DBResult.fail("Project does not exist"));
+                         return;
+                    }
+                    callback(DBResult.success, result[0].title);
+                    con.end();
                });
           });
      },
@@ -669,6 +686,28 @@ changeTaskStatus: function(project,task,status,callback)
                     con.end()
                     callback(DBResult.success);
                });
+          });
+     });
+},
+taskDue: function(task,project,callback)
+{
+     var con = mysql.createConnection(dbconfig);
+     con.connect(function(err) {
+          con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE task='"+task+"' AND project='"+project+"'",function(err,result) {
+               if (err)
+               {
+                    con.end();
+                    callback(DBResult.fail(err.code));
+                    return;
+               }
+               if (result.length == 0)
+               {
+                    con.end();
+                    callback(DBResult.fail("Task does not exist"));
+                    return;
+               }
+               callback(DBResult.success, result[0].due);
+               con.end();
           });
      });
 },

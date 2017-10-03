@@ -22,6 +22,7 @@ var projectsmod = require('./inc/api/projectsapi');
 var permsmod = require('./inc/api/permissionsapi');
 var DB = require('./inc/database');
 var MM = require('./inc/mattermost');
+var notifier = require('./inc/notifier');
 
 //this function will handle all of the requests
 var handleRequest = function(res, req, callback)
@@ -102,6 +103,7 @@ var handleRequest = function(res, req, callback)
 //on launch, initialize the DB library first
 DB.setup();
 projectsmod.getAllProjects(function(projs) {
+     notifier.initialize(); //initialize the notifier
      t.load(); //load and compile all of the templates
      srv.start(handleRequest); //now we can start the server
 });

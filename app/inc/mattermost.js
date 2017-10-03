@@ -36,7 +36,7 @@ function APICall(token,data,className)
      var json = "";
      var head = res.headers;
 
-     if (res.statusCode != 200)
+     if (res.statusCode != 200 && res.statusCode != 201)
      {
           json = {"fail": "yes", "msg": res.statusCode};
      }
@@ -113,6 +113,37 @@ var methods = {
      {
           var res = APICall(token,[userid],"/users/usernames");
           return (res.data.length > 0);
+     },
+     sendMessage: function(fromuserid,touserid,msg,token)
+     {
+          //get the user IDs first
+          var user1Res = APICall(token,null,"/users/username/"+fromuserid);
+          var user2Res = APICall(token,null,"/users/username/"+touserid);
+          if (user1Res.data.fail == "yes" || user2Res.data.fail == "yes")
+          {
+               return false;
+          }
+
+          //create a direct message channel and get it's channel ID
+          var data = [
+               user1Res.data.id,
+               user2Res.data.id
+          ];
+          var res = APICall(token,data,"/channels/direct");
+          if (res.data.fail == "yes")
+          {
+               return false;
+          }
+          var channelID = res.data.id;
+
+          //post the message to the channel
+          data = {
+               "channel_id": channelID,
+               "message": msg,
+               "root_id": "",
+               "file_ids": []
+          };
+          var res = APICall(token,data,"/posts");
      }
 };
 module.exports = methods;

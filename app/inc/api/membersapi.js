@@ -18,6 +18,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 var DB = require('../database');
 var MM = require('../mattermost');
 var permsmod = require('./permissionsapi');
+var notify = require('../notifier');
 
 //convert database result to a JSON object to be sent as the response to the API call
 var checkResult = function(res) {
@@ -33,7 +34,15 @@ var handlers = {
                callback({result: "fail", msg: "User '"+query["member"]+"' does not exist"});
                return;
           }
-          DB.addMember(query["member"],"Member",query["project"],function(res) {callback(checkResult(res));});
+          DB.addMember(query["member"],"Member",query["project"],function(res) {
+               if (res.success)
+               {
+                    DB.projectName(query["project"],function(res,title) {
+                         notify.addedToProject(query["member"],title);
+                    });
+               }
+               callback(checkResult(res));
+          });
      },
      "delete": function(query,callback) {
           if (query["member"] == MM.getAuthUser(query["token"]))
