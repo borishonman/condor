@@ -19,6 +19,7 @@ Copyright 2017 Justin Byers
 
 # CONFIGURATION: The following sections and options are valid
      * server - server configuration
+          * host: the URL that Condor will be accessed from
           * https: listen for HTTPS connections (true/false)
           * http: listen for HTTP connections (true/false)
           * https_port: port on which to listen for HTTPS connections
@@ -35,5 +36,13 @@ Copyright 2017 Justin Byers
           * prefix: prefix all table names with this
      * mattermost
           * host: host of the mattermost server to connect to
+          * user: username for the condor bot user
+          * pass: password for the condor bot user
      * misc
           * adminseeall: admins will see all projects in the sidebar
+     * notifications - what notifications will be enabled
+          * disableall - no notifications will be sent if true
+          * userassignedtask - send a notification when a user is assigned a task
+          * useraddedtoproject - send a notification when a user is added to a project
+          * taskduedatechanged - send a notification to the assigned user when a task's due date is changed
+          * taskdescchanged - send a notification to the assigned user when a task's description is changed

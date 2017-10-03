@@ -30,7 +30,7 @@ var sql = [
      {name: "projects", values: "id VARCHAR(128) NOT NULL, title VARCHAR(128) NOT NULL, creator VARCHAR(30) NOT NULL, create_time DATETIME NOT NULL, description VARCHAR(256) NULL, PRIMARY KEY(id)"},
      {name: "tasks", values: "id INT NOT NULL AUTO_INCREMENT, project VARCHAR(128) NOT NULL, task VARCHAR(64) NOT NULL, assigned VARCHAR(30) NULL, status VARCHAR(20) NOT NULL, due DATE NOT NULL, description VARCHAR(128) NULL, created DATETIME NOT NULL, PRIMARY KEY(id), FOREIGN KEY (project) REFERENCES "+prefix+"projects(id)"},
      {name: "member_assignments", values: "id INT NOT NULL AUTO_INCREMENT, userid VARCHAR(30) NOT NULL, project VARCHAR(128) NOT NULL, role VARCHAR(20) NOT NULL, PRIMARY KEY(id), FOREIGN KEY (project) REFERENCES "+prefix+"projects(id)"},
-     {name: "permissions", values: "id INT NOT NULL AUTO_INCREMENT, userid VARCHAR(30) NOT NULL, cancreateprojects BOOL NOT NULL, PRIMARY KEY(id)"}
+     {name: "permissions", values: "id INT NOT NULL AUTO_INCREMENT, userid VARCHAR(30) NOT NULL, cancreateprojects BOOL NOT NULL DEFAULT 0, ismoderator BOOL NOT NULL DEFAULT 0, PRIMARY KEY(id)"}
 ];
 
 console.log("Welcome to the Condor installer!");
