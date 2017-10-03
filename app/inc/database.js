@@ -711,6 +711,28 @@ taskDue: function(task,project,callback)
           });
      });
 },
+taskAssigned: function(task,project,callback)
+{
+     var con = mysql.createConnection(dbconfig);
+     con.connect(function(err) {
+          con.query("SELECT * FROM "+config["database"]["prefix"]+"tasks WHERE task='"+task+"' AND project='"+project+"'",function(err,result) {
+               if (err)
+               {
+                    con.end();
+                    callback(DBResult.fail(err.code));
+                    return;
+               }
+               if (result.length == 0)
+               {
+                    con.end();
+                    callback(DBResult.fail("Task does not exist"));
+                    return;
+               }
+               callback(DBResult.success, result[0].assigned);
+               con.end();
+          });
+     });
+},
 assignTask: function(project,task,member,callback)
 {
      //make sure the task exists

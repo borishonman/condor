@@ -65,6 +65,22 @@ var methods = {
           var dueDateString = dueDate.getMonth()+1 + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
           var message = "[NOTIFY] You have been assigned \"**"+taskName+"**\" in the project \"**"+project+"**\". This task is due on "+dueDateString+". More information: "+config["server"]["host"]+"/project/"+project.replace(/ /g, "_").toLowerCase();
           return MM.sendMessage(config["mattermost"]["user"],user,message,myToken);
+     },
+     dueDateChanged: function(user,taskName,due,project)
+     {
+          if (config["notifications"]["disableall"] || !config["notifications"]["taskduedatechanged"])
+               return;
+          var dueDate = new Date(due*1000);
+          var dueDateString = dueDate.getMonth()+1 + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
+          var message = "[NOTIFY] Your assigned task \"**"+taskName+"**\" in the project \"**"+project+"**\" has had a change in due date. This task is now due on "+dueDateString+". More information: "+config["server"]["host"]+"/project/"+project.replace(/ /g, "_").toLowerCase();
+          return MM.sendMessage(config["mattermost"]["user"],user,message,myToken);
+     },
+     descChanged: function(user,taskName,desc,project)
+     {
+          if (config["notifications"]["disableall"] || !config["notifications"]["taskdescchanged"])
+               return;
+          var message = "[NOTIFY] Your assigned task \"**"+taskName+"**\" in the project \"**"+project+"**\" has had a change in description. More information: "+config["server"]["host"]+"/project/"+project.replace(/ /g, "_").toLowerCase();
+          return MM.sendMessage(config["mattermost"]["user"],user,message,myToken);
      }
 };
 module.exports = methods;

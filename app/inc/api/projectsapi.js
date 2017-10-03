@@ -87,10 +87,30 @@ var handlers = {
           DB.deassignTask(query["project"],query["task"],function(res) {callback(checkResult(res));});
      },
      "editdate": function(query,callback) {
-          DB.changeDate(query["project"],query["task"],query["date"],function(res) {callback(checkResult(res));});
+          DB.changeDate(query["project"],query["task"],query["date"],function(res) {
+               if (res.success)
+               {
+                    DB.projectName(query["project"],function(res,title) {
+                         DB.taskAssigned(query["task"],query["project"],function(res,member) {
+                              notify.dueDateChanged(member,query["task"],query["date"],title);
+                         });
+                    });
+               }
+               callback(checkResult(res));
+          });
      },
      "editdesc": function(query,callback) {
-          DB.changeDesc(query["project"],query["task"],query["desc"],function(res) {callback(checkResult(res));});
+          DB.changeDesc(query["project"],query["task"],query["desc"],function(res) {
+               if (res.success)
+               {
+                    DB.projectName(query["project"],function(res,title) {
+                         DB.taskAssigned(query["task"],query["project"],function(res,member) {
+                              notify.descChanged(member,query["task"],query["desc"],title);
+                         });
+                    });
+               }
+               callback(checkResult(res));
+          });
      }
 };
 
