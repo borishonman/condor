@@ -424,8 +424,8 @@ taskSelected = function(sender,norecurse)
 {
      var old = document.getElementById('project-all-tasks').getElementsByClassName('regrow-active')[0];
      if (old != undefined)
-          old.className = old.className.replace('regrow-active','regrow');
-     sender.className = sender.className.replace('regrow','regrow-active');
+          old.className = 'regrow';
+     sender.className = 'regrow-active';
 
      var deleteBtn = document.getElementById('project-all-tasks-btns').getElementsByTagName('p')[1];
      var editDateBtn = document.getElementById('project-all-tasks-btns').getElementsByTagName('p')[3];
@@ -478,7 +478,6 @@ createTask = function(sender)
           window.alert("You have entered an invalid due date, please use the format MM/DD/YYYY");
           return;
      }
-     console.log(dueunix);
      var description = window.prompt("Task description", "");
      if (description == null) return;
 
