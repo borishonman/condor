@@ -152,8 +152,15 @@ function checkApiServe(req,res)
 app.get('/*',function(req,res) {
      if (!checkBinServe(req,res) && !checkApiServe(req,res))
      {
-          h2(res,req,function(content) {
-               res.writeHead(200, {'Content-Type': 'text/html'});
+          h2(res,req,function(content, type) {
+               if (type != undefined)
+               {
+                    res.writeHead(200, {'Content-Type': type});
+               }
+               else
+               {
+                    res.writeHead(200, {'Content-Type': 'text/html'});
+               }
                res.write(content);
                res.end();
           });
@@ -164,8 +171,15 @@ var jsonParser = bodyParser.json();
 app.post('/*',jsonParser,function(req,res) {
      if (!checkBinServe(req,res) && !checkApiServe(req,res))
      {
-          h2(res,req,function(content) {
-               res.writeHead(200, {'Content-Type': 'text/html'});
+          h2(res,req,function(content, type) {
+               if (type != undefined)
+               {
+                    res.writeHead(200, {'Content-Type': type});
+               }
+               else
+               {
+                    res.writeHead(200, {'Content-Type': 'text/html'});
+               }
                res.write(content);
                res.end();
           });

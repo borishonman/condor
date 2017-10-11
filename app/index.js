@@ -23,11 +23,21 @@ var permsmod = require('./inc/api/permissionsapi');
 var DB = require('./inc/database');
 var MM = require('./inc/mattermost');
 var notifier = require('./inc/notifier');
+var appdeploy = require('./inc/appdeploy');
 
 //this function will handle all of the requests
 var handleRequest = function(res, req, callback)
 {
      var content = "";
+
+     var r = /\/(app)\/([^\?]*)\??/g;
+     var m = r.exec(req.url);
+     if (m)
+     {
+          var apprequest = appdeploy.handleRequest(req);
+          callback(apprequest.data, apprequest.type);
+          return;
+     }
 
      //handle requests for project pages
      var r = /\/(getproject)\/([^\?]*)\??/g;

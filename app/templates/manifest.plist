@@ -1,0 +1,35 @@
+<plist version="1.0">
+        <dict>
+                <!-- array of downloads -->
+                <key>items</key>
+                <array>
+                        <dict>
+                                <!-- an array of assets to downloads -->
+                                <key>assets</key>
+                                <array>
+                                        <!-- software-package: the ipa to install -->
+                                        <dict>
+                                                <!-- required. the asset kind -->
+                                                <key>kind</key>
+                                                <string>software-package</string>
+                                                <!-- required. the URL of the file to download -->
+                                                <key>url</key>
+                                                <string>{{link}}</string>
+                                        </dict>
+                                </array>
+                                <key>metadata</key>
+                                <dict>
+                                        <!-- required -->
+                                        <key>bundle-identifier</key>
+                                        <string>com.amxproductions.condor</string>
+                                        <!-- required. the download kind -->
+                                        <key>kind</key>
+                                        <string>software</string>
+                                        <!-- required. the title to display during the download -->
+                                        <key>title</key>
+                                        <string>Condor iOS App</string>
+                                </dict>
+                        </dict>
+                </array>
+        </dict>
+</plist>
