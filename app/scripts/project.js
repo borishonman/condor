@@ -435,7 +435,7 @@ taskSelected = function(sender,norecurse)
      editDescBtn.className = editDescBtn.className.replace('disabled','');
 
      var assdeassBtn = document.getElementById('project-all-tasks-btns').getElementsByTagName('p')[2];
-     if (sender.getElementsByTagName('td')[1].innerHTML != "")
+     if (sender.getElementsByTagName('td')[1].innerHTML != "" && sender.getElementsByTagName('td')[1].innerHTML != "NOT ASSIGNED")
      {
           assdeassBtn.innerHTML = "Deassign";
           assdeassBtn.className = assdeassBtn.className.replace('disabled','');
