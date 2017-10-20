@@ -670,7 +670,7 @@ changeTaskStatus: function(project,task,status,callback)
                     return;
                }
                //run the query to update the task
-               con.query("UPDATE "+config["database"]["prefix"]+"tasks SET status='"+status+"'", function(err,result) {
+               con.query("UPDATE "+config["database"]["prefix"]+"tasks SET status='"+status+"' WHERE project='"+project+"' AND task='"+task+"'", function(err,result) {
                     if (err)
                     {
                          con.end()
