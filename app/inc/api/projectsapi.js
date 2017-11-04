@@ -32,7 +32,7 @@ var handlers = {
           module.exports.getAllProjects(function(projs) {
                var res = {};
                DB.getIsModerator(MM.getAuthUser(query["token"]), function(result,mod) {
-                    if (mod || MM.getIsUserAdmin())
+                    if (mod || MM.getIsUserAdmin(query["token"]))
                          res = projs;
                     else {
                          for (p in projs)
@@ -60,7 +60,7 @@ var handlers = {
           DB.changeTaskStatus(query["project"],query["task"],query["status"],function(res) {callback(checkResult(res));});
      },
      "createtask": function(query,callback) {
-          DB.createTask(query["project"],query["name"],query["due"],query["desc"],function(res){callback(checkResult(res));});
+          DB.createTask(query["project"],query["name"],query["due"],query["desc"],query["member"],function(res){callback(checkResult(res));});
      },
      "deletetask": function(query,callback) {
           DB.deleteTask(query["project"],query["name"],function(res){callback(checkResult(res));});

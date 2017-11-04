@@ -560,7 +560,7 @@ module.exports = {
           });
      });
 },
-createTask: function(project,name,due,desc,callback)
+createTask: function(project,name,due,desc,creator,callback)
 {
      //make sure the project exists
      var con = mysql.createConnection(dbconfig);
@@ -593,7 +593,7 @@ createTask: function(project,name,due,desc,callback)
                          return;
                     }
                     //insert the new task into the database
-                    con.query("INSERT INTO "+config["database"]["prefix"]+"tasks (project,task,assigned,status,due,description,created) VALUES ('"+project+"','"+name+"','','No Work Done',FROM_UNIXTIME("+due+"),'"+desc+"',FROM_UNIXTIME("+Math.floor(Date.now() / 1000)+"))",function(err,result) {
+                    con.query("INSERT INTO "+config["database"]["prefix"]+"tasks (project,task,assigned,status,due,description,created,created_by) VALUES ('"+project+"','"+name+"','','No Work Done',FROM_UNIXTIME("+due+"),'"+desc+"',FROM_UNIXTIME("+Math.floor(Date.now() / 1000)+"), '"+creator+"')",function(err,result) {
                          if (err)
                          {
                               console.warn(err);
@@ -983,7 +983,8 @@ getProjectTasks: function(project,callback)
                          'assigned': result[row].assigned,
                          'status': result[row].status,
                          'due': dueFormat,
-                         'description': result[row].description
+                         'description': result[row].description,
+                         'creator': result[row].created_by
                     };
                }
                con.end()

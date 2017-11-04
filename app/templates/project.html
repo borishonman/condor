@@ -84,6 +84,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
                <td class="header">Status</td>
                <td class="header">Due</td>
                <td class="header">Description</td>
+               <td class="header">Creator</td>
           </tr>
           {{#each tasks}}
           <tr class="regrow" onclick="taskSelected(this)">
@@ -92,6 +93,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
                <td class="regcell">{{this.status}}</td>
                <td class="regcell">{{this.due}}</td>
                <td class="regcell">{{this.description}}</td>
+               <td class="regcell">{{this.creator}}</td>
           </tr>
           {{/each}}
      </table>

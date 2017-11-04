@@ -481,7 +481,9 @@ createTask = function(sender)
      var description = window.prompt("Task description", "");
      if (description == null) return;
 
-     Condor.queryProject({"function": "createtask", "project": getCurrentProject(), "name": name, "due": dueunix, "desc": description},function(response) {
+     var creator = getCurrentUser();
+
+     Condor.queryProject({"function": "createtask", "project": getCurrentProject(), "name": name, "due": dueunix, "desc": description, "member": creator},function(response) {
           if (response.result == "success")
           {
                //create a new row in the task table
@@ -492,7 +494,7 @@ createTask = function(sender)
                     newRowTask.innerHTML = name;
                     newRow.appendChild(newRowTask);
                     var newRowAssigned = document.createElement("td");
-                    newRowAssigned.innerHTML = "NOT ASSIGNED";
+                    newRowAssigned.innerHTML = "";
                     newRow.appendChild(newRowAssigned);
                     var newRowStatus = document.createElement('td');
                     newRowStatus.innerHTML = "No Work Done";
