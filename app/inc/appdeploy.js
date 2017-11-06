@@ -138,6 +138,7 @@ var methods = {
                     var tag = parseFloat(resp[i]["tag_name"].substring(1));
                     //determine if this release has an APK
                     var hasApk = false;
+                    var assets = resp[i]["assets"];
                     for (var j=0;j<assets.length;j++)
                     {
                          if (assets[j]["name"].endsWith("ipa"))
