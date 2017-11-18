@@ -33,6 +33,19 @@ var handlers = {
                callback({result: "success", haspermission: create});
           });
      },
+     "editprojectdesc": function(query,callback)
+     {
+          DB.userIsProjectManager(user,query["project"],function(res,canassign) {
+               if (res.success)
+               {
+                    callback({result: "success", haspermission: canassign});
+               }
+               else
+               {
+                    callback({result: "fail", haspermission: false});
+               }
+          });
+     },
      "deleteproject": function(query,callback)
      {
           var user = MM.getAuthUser(query["token"]);

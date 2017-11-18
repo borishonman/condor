@@ -45,6 +45,9 @@ var handlers = {
                });
           });
      },
+     "editprojectdesc": function(query,callback) {
+          DB.editProjectDesc(query["project"], query["desc"], function(res) {callback(checkResult(res));});
+     },
      "create": function(query,callback) {
           if (!MM.userExists(query["member"],query["token"]))
           {

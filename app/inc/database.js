@@ -38,6 +38,30 @@ module.exports = {
                password: config["database"]["password"]
           };
      },
+     editProjectDesc: function(project, desc, callback)
+     {
+          var con = mysql.createConnection(dbconfig);
+          con.connect(function(err) {
+               con.query("SELECT * FROM "+config["database"]["prefix"]+"projects WHERE id='"+project+"'",function(err,result) {
+                    if (err || result.length == 0)
+                    {
+                         con.end()
+                         callback(DBResult.fail(err.code),null);
+                         return;
+                    }
+                    con.query("UPDATE "+config["database"]["prefix"]+"projects SET description='"+desc+"' WHERE id='"+project+"'", function(err,result) {
+                         if (err)
+                         {
+                              con.end();
+                              callback(DBResult.fail(err.code),null);
+                              return;
+                         }
+                         con.end();
+                         callback(DBResult.success, true);
+                    });
+               });
+          });
+     },
      userIsOwner: function(userid,project,callback)
      {
           var con = mysql.createConnection(dbconfig);

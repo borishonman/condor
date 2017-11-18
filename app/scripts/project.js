@@ -43,6 +43,35 @@ function getCurrentUser()
      return document.getElementById('user-id').innerHTML;
 }
 
+var startEditDescription = function()
+{
+     //get the description as it is now
+     var descDiv = document.getElementById('project-description');
+     var description = descDiv.innerHTML;
+     //create a text area object for the person to edit stuff in
+     var descTextArea = document.createElement('textarea');
+     descTextArea.innerHTML = description;
+     //create a save button
+     var descSave = document.createElement('button');
+     descSave.innerHTML = "Save";
+     descSave.onclick = finishEditDescription;
+     //replace the description with the text area
+     descDiv.innerHTML = "";
+     descDiv.appendChild(descTextArea);
+     descDiv.appendChild(descSave);
+}
+
+var finishEditDescription = function()
+{
+     var newDesc = document.getElementById('project-description').getElementsByTagName('textarea')[0].value;
+     Condor.queryProject({"function": "editprojectdesc", "project": getCurrentProject(), "desc": newDesc}, function(response) {
+          if (response.result == "success")
+          {
+               document.getElementById('project-description').innerHTML = newDesc;
+          }
+     });
+}
+
 var createProject = function()
 {
      var projectToCreate = window.prompt("Project Name:","A Project");
