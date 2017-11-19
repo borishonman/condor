@@ -28,7 +28,7 @@ var prefix = config["database"]["prefix"];
 
 var sql = [
      {name: "projects", values: "id VARCHAR(128) NOT NULL, title VARCHAR(128) NOT NULL, creator VARCHAR(30) NOT NULL, create_time DATETIME NOT NULL, description VARCHAR(256) NULL, PRIMARY KEY(id)"},
-     {name: "tasks", values: "id INT NOT NULL AUTO_INCREMENT, project VARCHAR(128) NOT NULL, task VARCHAR(64) NOT NULL, assigned VARCHAR(30) NULL, status VARCHAR(20) NOT NULL, due DATE NOT NULL, description VARCHAR(128) NULL, created DATETIME NOT NULL, PRIMARY KEY(id), FOREIGN KEY (project) REFERENCES "+prefix+"projects(id)"},
+     {name: "tasks", values: "id INT NOT NULL AUTO_INCREMENT, project VARCHAR(128) NOT NULL, task VARCHAR(64) NOT NULL, assigned VARCHAR(30) NULL, status VARCHAR(20) NOT NULL, due DATE NOT NULL, description VARCHAR(128) NULL, created DATETIME NOT NULL, created_by VARCHAR(30), PRIMARY KEY(id), FOREIGN KEY (project) REFERENCES "+prefix+"projects(id)"},
      {name: "member_assignments", values: "id INT NOT NULL AUTO_INCREMENT, userid VARCHAR(30) NOT NULL, project VARCHAR(128) NOT NULL, role VARCHAR(20) NOT NULL, PRIMARY KEY(id), FOREIGN KEY (project) REFERENCES "+prefix+"projects(id)"},
      {name: "permissions", values: "id INT NOT NULL AUTO_INCREMENT, userid VARCHAR(30) NOT NULL, cancreateprojects BOOL NOT NULL DEFAULT 0, ismoderator BOOL NOT NULL DEFAULT 0, PRIMARY KEY(id)"}
 ];
@@ -62,6 +62,7 @@ stdin.addListener("data", function(d) {
                if (err != null)
                {
                     console.error("[ERROR]: Could not connect to database at '"+host+"': "+err.code + " "+(err.sqlMessage != undefined ? err.sqlMessage : ""));
+                    con.end();
                     process.exit();
                }
                var cnt = 0;
@@ -72,18 +73,20 @@ stdin.addListener("data", function(d) {
                          if (err != null)
                          {
                               console.error("[ERROR]: Could not create table "+prefix+this+": "+err.code + " "+(err.sqlMessage != undefined ? err.sqlMessage : ""));
+                              con.end();
                               process.exit();
                          }
                          console.log("Done creating table "+prefix+this);
                          cnt++;
                          if (cnt == sql.length)
                          {
-                              con.end();
                               console.log("Condor has been set up!");
+                              con.end();
                               process.exit();
                          }
                     }.bind(sql[t].name));
                }
+               con.end();
           });
      }
 });
