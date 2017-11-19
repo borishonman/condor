@@ -152,35 +152,69 @@ var changeMember = function(sender)
           assdeassBtn.className = assdeassBtn.className.replace('disabled','');
      }
 }
+
+var finishAddMember = function()
+{
+     var curProject = getCurrentProject();
+     var memberToAdd = document.getElementById('member-add-btn').getElementsByTagName('input')[0].value;
+     if (memberToAdd == null) return;
+     Condor.queryMember({"function": "add", "member": memberToAdd, "project": curProject},function(response) {
+          if (response.result == "success")
+          {
+               newRow = document.createElement("tr");
+               newRow.className = 'regrow';
+               newRow.onclick = function () { changeMember(this); };
+                    var newRowName = document.createElement("td");
+                    newRowName.innerHTML = memberToAdd;
+                    newRow.appendChild(newRowName);
+                    var newRowRole = document.createElement("td");
+                    newRowRole.innerHTML = "Member";
+                    newRow.appendChild(newRowRole);
+                    var newRowTasks = document.createElement("td");
+                    newRowTasks.innerHTML = "0";
+                    newRow.appendChild(newRowTasks);
+               document.getElementById("project-members").getElementsByTagName('tbody')[0].appendChild(newRow);
+
+               //put the button back on the page
+               var addMemberBtn = document.createElement('p');
+               addMemberBtn.innerHTML = "Add to Project";
+               addMemberBtn.className = "button";
+               addMemberBtn.onclick = function() { manageMember(addMemberBtn,'add'); };
+               document.getElementById('member-add-btn').innerHTML = "";
+               document.getElementById('member-add-btn').appendChild(addMemberBtn);
+          }
+          else
+          {
+               window.alert("ERROR Adding member "+memberToAdd+":\n\n"+response.msg);
+          }
+     });
+}
+
 var manageMember = function(sender,action)
 {
      var curProject = getCurrentProject();
      if (action == 'add')
      {
-          var memberToAdd = window.prompt("Member Name:","firstname_lastname");
-          if (memberToAdd == null) return;
-          Condor.queryMember({"function": "add", "member": memberToAdd, "project": curProject},function(response) {
-               if (response.result == "success")
-               {
-                    newRow = document.createElement("tr");
-                    newRow.className = 'regrow';
-                    newRow.onclick = function () { changeMember(this); };
-                         var newRowName = document.createElement("td");
-                         newRowName.innerHTML = memberToAdd;
-                         newRow.appendChild(newRowName);
-                         var newRowRole = document.createElement("td");
-                         newRowRole.innerHTML = "Member";
-                         newRow.appendChild(newRowRole);
-                         var newRowTasks = document.createElement("td");
-                         newRowTasks.innerHTML = "0";
-                         newRow.appendChild(newRowTasks);
-                    document.getElementById("project-members").getElementsByTagName('tbody')[0].appendChild(newRow);
-               }
-               else
-               {
-                    window.alert("ERROR Adding member "+memberToAdd+":\n\n"+response.msg);
-               }
-          });
+          var txtMember = document.createElement('input');
+          txtMember.type = "text";
+          var btnSaveMember = document.createElement('button');
+          btnSaveMember.innerHTML = "Add";
+          btnSaveMember.onclick = finishAddMember;
+          var btnCancel = document.createElement('button');
+          btnCancel.innerHTML = "Cancel";
+          btnCancel.onclick = function() {
+               //put the button back on the page
+               var addMemberBtn = document.createElement('p');
+               addMemberBtn.innerHTML = "Add to Project";
+               addMemberBtn.className = "button";
+               addMemberBtn.onclick = function() { manageMember(addMemberBtn,'add'); };
+               document.getElementById('member-add-btn').innerHTML = "";
+               document.getElementById('member-add-btn').appendChild(addMemberBtn);
+          };
+          document.getElementById('member-add-btn').innerHTML = "";
+          document.getElementById('member-add-btn').appendChild(txtMember);
+          document.getElementById('member-add-btn').appendChild(btnSaveMember);
+          document.getElementById('member-add-btn').appendChild(btnCancel);
      }
 
      var selected = getSelectedMemberRow();
