@@ -1,0 +1,36 @@
+{
+     "server": {
+          "host": "https://condor.example.com",
+          "https": false,
+          "http": true,
+          "https_port": 443,
+          "http_port": 80,
+          "http_forward": false,
+          "ssl_key": "",
+          "ssl_cert": ""
+     },
+     "database": {
+          "connector": "mysql",
+          "host": "localhost",
+          "database": "condor",
+          "user": "condor",
+          "password": "your_db_user_password",
+          "prefix": "cnd_"
+     },
+     "mattermost": {
+          "host": "https://mm.example.com",
+          "user": "condor",
+          "pass": "your_mm_user_password"
+     },
+     "permissions": {
+          "ownerdelete": true
+     },
+     "misc": {
+          "adminseeall": true
+     },
+     "notifications": {
+          "disableall": false,
+          "userassignedtask": true,
+          "useraddedtoproject": true
+     }
+}
