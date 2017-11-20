@@ -30,7 +30,7 @@ var handleRequest = function(res, req, callback)
 {
      var content = "";
 
-     var r = /\/(app)\/([^\?]*)\??/g;
+     var r = /\/(app)/g;
      var m = r.exec(req.url);
      if (m)
      {
@@ -103,7 +103,7 @@ var handleRequest = function(res, req, callback)
      //fill the template data block and render the page
      var data = {
           "stylesheets": ["main.css","project.css","login.css","home.css"],
-          "scripts": ["jquery-3.2.1.js","cookie.js","condor-api.js","condor.js","nav.js","project.js"],
+          "scripts": ["jquery-3.2.1.js","cookie.js","condor-api.js","mobile-detect.js","condor.js","nav.js","project.js"],
           "projects-title": "PROJECTS",
           "pagecontent": content
      }

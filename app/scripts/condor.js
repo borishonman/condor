@@ -149,8 +149,53 @@ function logout()
      });
 }
 
+function checkMobile()
+{
+     var type = {
+          mobile: false,
+          ios: false,
+          android: false
+     };
+
+     var md = new MobileDetect(window.navigator.userAgent);
+
+     type.ios = (md.os() == 'iOS');
+     type.android = (md.os() == 'AndroidOS');
+     type.mobile = type.ios || type.android;
+
+     return type;
+}
+
+function dismissMobilePrompt()
+{
+     setCookie('ignoremobile', 'yes');
+     document.getElementById("modal").className = "nodisplay";
+}
+
 function main()
 {
+     var type = checkMobile();
+     if (/*type.mobile*/type.android && getCookie('ignoremobile') != 'yes')
+     {
+          var link = "";
+          if (type.ios)
+          {
+               //in the future, show a page
+          }
+          else if (type.android)
+          {
+               link = window.location.protocol+"//"+window.location.hostname+"/app";
+          }
+
+          var content = document.getElementById('modal-content');
+
+          content.innerHTML = "<center>We recommend using the Condor app for the best experience.</center>";
+          content.innerHTML += "<BR><a href='"+link+"'>Go to download</a>";
+          content.innerHTML += "<BR><BR><a href='#' onclick='dismissMobilePrompt()'>Or click here to continue anyway</a></div>"
+          document.getElementById("modal").className = "";
+     }
+
+
      //log in to mattermost
      //try to log in with token from cookie, if fail prompt for a login page
      var token = getCookie("token");
