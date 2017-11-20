@@ -55,10 +55,15 @@ var startEditDescription = function()
      var descSave = document.createElement('button');
      descSave.innerHTML = "Save";
      descSave.onclick = finishEditDescription;
+     //create a cancel button
+     var descCancel = document.createElement('button');
+     descCancel.innerHTML = "Cancel";
+     descCancel.onclick = function() { document.getElementById('project-description').innerHTML = description; };
      //replace the description with the text area
      descDiv.innerHTML = "";
      descDiv.appendChild(descTextArea);
      descDiv.appendChild(descSave);
+     descDiv.appendChild(descCancel);
 }
 
 var finishEditDescription = function()
