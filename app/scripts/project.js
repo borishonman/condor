@@ -43,6 +43,66 @@ function getCurrentUser()
      return document.getElementById('user-id').innerHTML;
 }
 
+function pad(num)
+{
+    var s = "0" + num;
+    return s.substr(s.length-2);
+}
+
+function DATE_fromstring(str, fromhtml)
+{
+     var year;
+     var month;
+     var date;
+
+     if (fromhtml)
+     {
+          //attempt to locate the first "-"
+          var sep1 = str.indexOf("-", 0);
+          if (sep1 == -1)
+               return new Date();
+          //attempt to locate the second "-"
+          var sep2 = str.indexOf("-", sep1+1);
+          if (sep2 == -1)
+               return new Date();
+          //extract the parts of the date string
+          year = parseInt(str.slice(0, sep1));
+          month = parseInt(str.slice(sep1+1, sep2));
+          date = parseInt(str.slice(sep2+1));
+     }
+     else
+     {
+          //attempt to locate the first "/"
+          var sep1 = str.indexOf("/", 0);
+          if (sep1 == -1)
+               return new Date();
+          //attempt to locate the second "/"
+          var sep2 = str.indexOf("/", sep1+1);
+          if (sep2 == -1)
+               return new Date();
+          //extract the parts of the date string
+          month = parseInt(str.slice(0, sep1));
+          date = parseInt(str.slice(sep1+1, sep2));
+          year = parseInt(str.slice(sep2+1));
+     }
+
+     //make sure the date is valid
+     if (isNaN(year) || isNaN(month) || isNaN(date))
+          return new Date();
+     //build the return date
+     var ret = new Date();
+     ret.setFullYear(year, month-1, date);
+     //return the date
+     return ret;
+}
+function DATE_tostring(d, tohtml)
+{
+     if (tohtml)
+          return d.getFullYear()+"-"+pad((d.getMonth()+1).toString())+"-"+pad(d.getDate());
+     else
+          return pad((d.getMonth()+1).toString())+"/"+pad(d.getDate())+"/"+d.getFullYear();
+}
+
 var startEditDescription = function()
 {
      //get the description as it is now
@@ -540,9 +600,9 @@ var finishCreateTask = function()
 {
      var name = document.getElementById('txt_new_task_name').value;
      if (name == null) return;
-     var due = document.getElementById('txt_new_task_due').value;
+     var due = DATE_fromstring(document.getElementById('txt_new_task_due').value, true);
      if (due == null) return;
-     var dueunix = (new Date(due)).getTime()/1000;
+     var dueunix = due.getTime()/1000;
      if (dueunix == null || isNaN(dueunix))
      {
           window.alert("You have entered an invalid due date, please use the format MM/DD/YYYY");
@@ -570,7 +630,7 @@ var finishCreateTask = function()
                     newRowStatus.innerHTML = "No Work Done";
                     newRow.appendChild(newRowStatus);
                     var newRowDue = document.createElement('td');
-                    newRowDue.innerHTML = due;
+                    newRowDue.innerHTML = DATE_tostring(due, false);
                     newRow.appendChild(newRowDue);
                     var newRowDescription = document.createElement("td");
                     newRowDescription.innerHTML = description;
@@ -589,7 +649,7 @@ createTask = function(sender)
 {
      var form = document.createElement('table');
      form.innerHTML = "<tr><td>Task Name</td><td><input type='text' id='txt_new_task_name'></td></tr>";
-     form.innerHTML += "<tr><td>Due date</td><td><input type='text' id='txt_new_task_due' value='MM/DD/YYYY'></td></tr>";
+     form.innerHTML += "<tr><td>Due date</td><td><input type='date' id='txt_new_task_due' value='MM/DD/YYYY'></td></tr>";
      form.innerHTML += "<tr><td>Description</td><td><textarea id='txt_new_task_desc'></textarea></td></tr>";
      form.innerHTML += "<tr><td /><td><button onclick='finishCreateTask()'>Create</button><button onclick='(function() { document.getElementById(\"modal\").className = \"nodisplay\"; })()'>Cancel</button></tr>";
      document.getElementById('modal-content').innerHTML = "<center>Create a Task</center>";
@@ -672,34 +732,32 @@ assdeassTask = function(sender)
 
 var finishEditDate = function()
 {
-     var newDate = document.getElementById('txt_edit_task_date').value;
-     if (newDate == null) return;
-
-     var dueunix = (new Date(newDate)).getTime()/1000;
+     var newDate = DATE_fromstring(document.getElementById('txt_edit_task_date').value, true);
+     var dueunix = newDate.getTime()/1000;
      var taskName = getSelectedTaskRow().getElementsByTagName('td')[0].innerHTML;
      Condor.queryProject({"function": "editdate", "project": getCurrentProject(), "task": taskName, "date": dueunix},function(response) {
           if (response.result == "success")
           {
-               getSelectedTaskRow().getElementsByTagName('td')[3].innerHTML = newDate;
+               getSelectedTaskRow().getElementsByTagName('td')[3].innerHTML = DATE_tostring(newDate);
                if (getSelectedTaskRow().getElementsByTagName('td')[1].innerHTML == document.getElementById('user-id').innerHTML)
                {
-                    getSelectedMyTaskRow().getElementsByTagName('td')[2].innerHTML = newDate;
+                    getSelectedMyTaskRow().getElementsByTagName('td')[2].innerHTML = DATE_tostring(newDate);
                }
                document.getElementById('modal').className = "nodisplay";
           }
           else
           {
-               window.alert("ERROR: Failed to change date to "+newDate+":\n\n"+response.msg);
+               window.alert("ERROR: Failed to change date to "+DATE_tostring(newDate)+":\n\n"+response.msg);
           }
      });
 }
 
 editDate = function(sender)
 {
-     var taskDate = getSelectedTaskRow().getElementsByTagName('td')[3].innerHTML;
+     var taskDate = DATE_fromstring(getSelectedTaskRow().getElementsByTagName('td')[3].innerHTML, false);
 
      var form = document.createElement('table');
-     form.innerHTML = "<tr><td>Task Due Date</td><td><input type='text' id='txt_edit_task_date' value=\""+taskDate+"\"></td></tr>";
+     form.innerHTML = "<tr><td>Task Due Date</td><td><input type='date' id='txt_edit_task_date' value=\""+DATE_tostring(taskDate, true)+"\"></td></tr>";
      form.innerHTML += "<tr><td /><td><button onclick='finishEditDate()'>Save</button><button onclick='(function() { document.getElementById(\"modal\").className = \"nodisplay\"; })()'>Cancel</button></tr>";
 
      document.getElementById('modal-content').innerHTML = "<center>Edit Task Due Date</center>";
