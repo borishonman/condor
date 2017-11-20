@@ -72,11 +72,11 @@ var finishEditDescription = function()
      });
 }
 
-var createProject = function()
+var finishCreateProject = function()
 {
-     var projectToCreate = window.prompt("Project Name:","A Project");
+     var projectToCreate = document.getElementById('txt_new_project_name').value;
      if (projectToCreate == null) return;
-     var description = window.prompt("Project Description","");
+     var description = document.getElementById('txt_new_project_desc').value;
      if (description == null) return;
 
      Condor.queryProject({"function": "create", "project": projectToCreate, "description": description, "member": getCurrentUser()},function(response) {
@@ -87,12 +87,25 @@ var createProject = function()
                newProject.innerHTML = projectToCreate;
                newProject.addEventListener('click',changeProject);
                document.getElementById('projects').getElementsByTagName('ul')[0].appendChild(newProject);
+               document.getElementById('modal').className = "nodisplay";
           }
           else
           {
                window.alert("Failed to create project:\n\n"+response.msg);
           }
      });
+}
+
+var createProject = function()
+{
+     var newProjectTable = document.createElement('table');
+     newProjectTable.innerHTML = "<tr><td>Project Name</td><td><input type='text' id='txt_new_project_name'></td></tr>";
+     newProjectTable.innerHTML += "<tr><td>Project Description</td><td><textarea id='txt_new_project_desc'></textarea></td></tr>";
+     newProjectTable.innerHTML += "<tr><td /><td><button onclick='finishCreateProject()'>Create</button><button onclick='(function() { document.getElementById(\"modal\").className = \"nodisplay\"; })()'>Cancel</button></td></tr>";
+
+     document.getElementById('modal-content').innerHTML = "<center>Create Project</center>";
+     document.getElementById('modal-content').appendChild(newProjectTable);
+     document.getElementById('modal').className = "";
 }
 var deleteProject = function()
 {
