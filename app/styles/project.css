@@ -155,35 +155,3 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
      color: F2B07B;
      cursor: default;
 }
-
-#modal
-{
-     height: 100%;
-     width: 100%;
-     background-color: rgba(1, 1, 1, 0.5);
-     position: fixed;
-     z-index = 1;
-     top: 0;
-     left: 0;
-}
-#modal table
-{
-     width: 100%;
-     height: 100%;
-     vertical-align: middle;
-}
-#modal input, #modal textarea
-{
-     width: 100%;
-}
-#modal-content
-{
-     width: 20%;
-     margin-left: auto;
-     margin-right: auto;
-     background-color: #f36f01;
-}
-#modal-content table
-{
-     width: 100%;
-}
