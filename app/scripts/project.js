@@ -583,11 +583,11 @@ var finishCreateTask = function()
 createTask = function(sender)
 {
      var form = document.createElement('table');
-     form.innerHTML = "<tr><td><p style='text-align: center'>Create a Task</p></td></tr><tr><td>Task Name</td><td><input type='text' id='txt_new_task_name'></td></tr>";
+     form.innerHTML = "<tr><td>Task Name</td><td><input type='text' id='txt_new_task_name'></td></tr>";
      form.innerHTML += "<tr><td>Due date</td><td><input type='text' id='txt_new_task_due' value='MM/DD/YYYY'></td></tr>";
      form.innerHTML += "<tr><td>Description</td><td><textarea id='txt_new_task_desc'></textarea></td></tr>";
      form.innerHTML += "<tr><td /><td><button onclick='finishCreateTask()'>Create</button><button onclick='(function() { document.getElementById(\"modal\").className = \"nodisplay\"; })()'>Cancel</button></tr>";
-     document.getElementById('modal-content').innerHTML = "";
+     document.getElementById('modal-content').innerHTML = "<center>Create a Task</center>";
      document.getElementById('modal-content').appendChild(form);
      document.getElementById('modal').className = "";
 }
@@ -665,10 +665,9 @@ assdeassTask = function(sender)
      }
 }
 
-editDate = function(sender)
+var finishEditDate = function()
 {
-     var taskDate = getSelectedTaskRow().getElementsByTagName('td')[3].innerHTML;
-     var newDate = window.prompt("Enter Date", taskDate);
+     var newDate = document.getElementById('txt_edit_task_date').value;
      if (newDate == null) return;
 
      var dueunix = (new Date(newDate)).getTime()/1000;
@@ -681,12 +680,26 @@ editDate = function(sender)
                {
                     getSelectedMyTaskRow().getElementsByTagName('td')[2].innerHTML = newDate;
                }
+               document.getElementById('modal').className = "nodisplay";
           }
           else
           {
                window.alert("ERROR: Failed to change date to "+newDate+":\n\n"+response.msg);
           }
      });
+}
+
+editDate = function(sender)
+{
+     var taskDate = getSelectedTaskRow().getElementsByTagName('td')[3].innerHTML;
+
+     var form = document.createElement('table');
+     form.innerHTML = "<tr><td>Task Name</td><td><input type='text' id='txt_edit_task_date' value=\""+taskDate+"\"></td></tr>";
+     form.innerHTML += "<tr><td /><td><button onclick='finishEditDate()'>Save</button><button onclick='(function() { document.getElementById(\"modal\").className = \"nodisplay\"; })()'>Cancel</button></tr>";
+
+     document.getElementById('modal-content').innerHTML = "<center>Edit Task Due Date</center>";
+     document.getElementById('modal-content').appendChild(form);
+     document.getElementById('modal').className = "";
 }
 editDesc = function(sender)
 {
