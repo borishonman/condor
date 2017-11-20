@@ -197,7 +197,7 @@ var manageMember = function(sender,action)
           var btnCancel = document.createElement('button');
           btnCancel.innerHTML = "Cancel";
           btnCancel.onclick = function() {
-               document.getElementById('modal-content').className = "nodisplay";
+               document.getElementById('modal').className = "nodisplay";
           };
           document.getElementById('modal-content').innerHTML = "<center>Add Member</center>";
           document.getElementById('modal-content').appendChild(txtMember);
