@@ -17,17 +17,17 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 function completeLogin(user)
 {
+     //set the username and team
+     Condor.queryAuth({"function": "getteam", "token": getCookie("token")},function(res) {
+          document.getElementById('user-id').innerHTML = user;
+          document.getElementById('user-team').innerHTML = res.team;
+          //display the logout button
+          document.getElementById('logout').className = "";
+          //set the page title
+          document.title = "Condor | "+res.team;
+     });
+     //get the list of projects
      Condor.queryProject({"function": "getprojectlist"},function(res) {
-          //set the username and team
-          Condor.queryAuth({"function": "getteam", "token": getCookie("token")},function(res) {
-               document.getElementById('user-id').innerHTML = user;
-               document.getElementById('user-team').innerHTML = res.team;
-               //display the logout button
-               document.getElementById('logout').className = "";
-               //set the page title
-               document.title = "Condor | "+res.team;
-          });
-
           if (res.result != "success")
           {
                window.alert("Failed to get project list:\n\n"+res.msg);

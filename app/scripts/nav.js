@@ -49,14 +49,14 @@ var changeProject = function(event)
                     document.getElementById('projects-delete').className = document.getElementById('projects-delete').className.replace("nodisplay","");
                     document.getElementById('project-description-edit').className = "";
                }
-               //check member management permission
-               Condor.queryPermission({"permission": "managemembers", "project": sender.innerHTML.replace(/ /g,'_').toLowerCase()},function(res) {
-                    if (res.haspermission) document.getElementById('project-members-buttons').className = "";
-                    //check task management permission
-                    Condor.queryPermission({"permission": "managetasks", "project": sender.innerHTML.replace(/ /g,'_').toLowerCase()},function(res) {
-                         if (res.haspermission) document.getElementById('project-all-tasks-btns').className = "";
-                    });
-               });
+          });
+          //check member management permission
+          Condor.queryPermission({"permission": "managemembers", "project": sender.innerHTML.replace(/ /g,'_').toLowerCase()},function(res) {
+               if (res.haspermission) document.getElementById('project-members-buttons').className = "";
+          });
+          //check task management permission
+          Condor.queryPermission({"permission": "managetasks", "project": sender.innerHTML.replace(/ /g,'_').toLowerCase()},function(res) {
+               if (res.haspermission) document.getElementById('project-all-tasks-btns').className = "";
           });
      });
 }
