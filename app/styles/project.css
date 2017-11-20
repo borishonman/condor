@@ -90,7 +90,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
      float: right;
      margin-top: 5px;
 }
-#member-perms-buttons .button
+#member-perms-buttons .button, #member-add-btn
 {
      float: left;
      cursor: pointer;
