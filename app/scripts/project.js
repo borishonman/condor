@@ -694,17 +694,17 @@ editDate = function(sender)
      var taskDate = getSelectedTaskRow().getElementsByTagName('td')[3].innerHTML;
 
      var form = document.createElement('table');
-     form.innerHTML = "<tr><td>Task Name</td><td><input type='text' id='txt_edit_task_date' value=\""+taskDate+"\"></td></tr>";
+     form.innerHTML = "<tr><td>Task Due Date</td><td><input type='text' id='txt_edit_task_date' value=\""+taskDate+"\"></td></tr>";
      form.innerHTML += "<tr><td /><td><button onclick='finishEditDate()'>Save</button><button onclick='(function() { document.getElementById(\"modal\").className = \"nodisplay\"; })()'>Cancel</button></tr>";
 
      document.getElementById('modal-content').innerHTML = "<center>Edit Task Due Date</center>";
      document.getElementById('modal-content').appendChild(form);
      document.getElementById('modal').className = "";
 }
-editDesc = function(sender)
+
+var finishEditDesc = function()
 {
-     var taskDesc = getSelectedTaskRow().getElementsByTagName('td')[4].innerHTML;
-     var newDesc = window.prompt("Enter Description", taskDesc);
+     var newDesc = document.getElementById('txt_edit_task_desc').value;
      if (newDesc == null) return;
      var taskName = getSelectedTaskRow().getElementsByTagName('td')[0].innerHTML;
      Condor.queryProject({"function": "editdesc", "project": getCurrentProject(), "task": taskName, "desc": newDesc},function(response) {
@@ -715,10 +715,24 @@ editDesc = function(sender)
                {
                     getSelectedMyTaskRow().getElementsByTagName('td')[3].innerHTML = newDesc;
                }
+               document.getElementById('modal').className = "nodisplay";
           }
           else
           {
                window.alert("ERROR: Failed to change description:\n\n"+response.msg);
           }
      });
+}
+
+editDesc = function(sender)
+{
+     var taskDesc = getSelectedTaskRow().getElementsByTagName('td')[4].innerHTML;
+
+     var form = document.createElement('table');
+     form.innerHTML = "<tr><td>Task Description</td><td><textarea id='txt_edit_task_desc'>"+taskDesc+"</textarea></td></tr>";
+     form.innerHTML += "<tr><td /><td><button onclick='finishEditDesc()'>Save</button><button onclick='(function() { document.getElementById(\"modal\").className = \"nodisplay\"; })()'>Cancel</button></tr>";
+
+     document.getElementById('modal-content').innerHTML = "<center>Edit Task Description</center>";
+     document.getElementById('modal-content').appendChild(form);
+     document.getElementById('modal').className = "";
 }
