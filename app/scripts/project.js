@@ -529,11 +529,11 @@ taskSelected = function(sender,norecurse)
      }
 }
 
-createTask = function(sender)
+var finishCreateTask = function()
 {
-     var name = window.prompt("Task Name","A task");
+     var name = document.getElementById('txt_new_task_name').value;
      if (name == null) return;
-     var due = window.prompt("Due date", "MM/DD/YYYY");
+     var due = document.getElementById('txt_new_task_due').value;
      if (due == null) return;
      var dueunix = (new Date(due)).getTime()/1000;
      if (dueunix == null || isNaN(dueunix))
@@ -541,7 +541,7 @@ createTask = function(sender)
           window.alert("You have entered an invalid due date, please use the format MM/DD/YYYY");
           return;
      }
-     var description = window.prompt("Task description", "");
+     var description = document.getElementById('txt_new_task_desc').value;
      if (description == null) return;
 
      var creator = getCurrentUser();
@@ -569,12 +569,25 @@ createTask = function(sender)
                     newRowDescription.innerHTML = description;
                     newRow.appendChild(newRowDescription);
                document.getElementById("project-all-tasks").getElementsByTagName('tbody')[0].appendChild(newRow);
+               document.getElementById("modal").className = "nodisplay";
           }
           else
           {
                window.alert("ERROR Creating task '"+name+"':\n\n"+response.msg);
           }
      });
+}
+
+createTask = function(sender)
+{
+     var form = document.createElement('table');
+     form.innerHTML = "<tr><td><p style='text-align: center'>Create a Task</p></td></tr><tr><td>Task Name</td><td><input type='text' id='txt_new_task_name'></td></tr>";
+     form.innerHTML += "<tr><td>Due date</td><td><input type='text' id='txt_new_task_due' value='MM/DD/YYYY'></td></tr>";
+     form.innerHTML += "<tr><td>Description</td><td><textarea id='txt_new_task_desc'></textarea></td></tr>";
+     form.innerHTML += "<tr><td /><td><button onclick='finishCreateTask()'>Create</button><button onclick='(function() { document.getElementById(\"modal\").className = \"nodisplay\"; })()'>Cancel</button></tr>";
+     document.getElementById('modal-content').innerHTML = "";
+     document.getElementById('modal-content').appendChild(form);
+     document.getElementById('modal').className = "";
 }
 
 deleteTask = function(sender)
