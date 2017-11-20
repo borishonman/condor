@@ -47,7 +47,6 @@ var methods = {
                var v = templates[k];
                compiledTemplates[k] = {
                     desktop: handlebars.compile(fs.readFileSync('app/templates/'+v).toString()),
-                    mobile: handlebars.compile(fs.readFileSync('app/templates/mobile/'+v).toString())
                };
           }
      },
@@ -67,10 +66,6 @@ var methods = {
 
           if ((template in compiledTemplates))
           {
-               if (ismobile)
-               {
-                    return compiledTemplates[template].mobile(data);
-               }
                return compiledTemplates[template].desktop(data);
           }
           return null;

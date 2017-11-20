@@ -103,7 +103,7 @@ var handleRequest = function(res, req, callback)
      //fill the template data block and render the page
      var data = {
           "stylesheets": ["main.css","project.css","login.css","home.css"],
-          "scripts": ["jquery-3.2.1.js","cookie.js","condor-api.js","waitthing.js","condor.js","nav.js","project.js"],
+          "scripts": ["jquery-3.2.1.js","cookie.js","condor-api.js","condor.js","nav.js","project.js"],
           "projects-title": "PROJECTS",
           "pagecontent": content
      }
